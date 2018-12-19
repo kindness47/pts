@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pts.dao.UserDao">
+    <resultMap id="BaseMap" type="com.pts.model.User">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="account" property="account" jdbcType="VARCHAR"></result>
+        <result column="username" property="userName" jdbcType="VARCHAR"></result>
+        <result column="password" property="passWord" jdbcType="VARCHAR"></result>
+        <result column="role_name" property="roleName" jdbcType="VARCHAR"></result>
+        <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="exception_desc" property="exceptionDesc" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"></result>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"></result>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"></result>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <sql id="BaseFiled">
+        `id`,`account`,`username`,`password`,`role_name`,`status`,`exception_desc`,`create_time`,`create_by`,`update_time`,`update_by`
+    </sql>
+
+    <!--插入-->
+    <insert id="insert" parameterType="com.pts.model.User">
+        INSERT INTO `p_user`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">
+                `id`,
+            </if>
+            <if test="account != null">
+                `account`,
+            </if>
+            <if test="userName != null">
+                `username`,
+            </if>
+            <if test="passWord != null">
+                `password`,
+            </if>
+            <if test="roleName != null">
+                `role_name`,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="createBy != null">
+                `create_by`,
+            </if>
+            <if test="createTime != null">
+                `create_time`,
+            </if>
+        </trim>
+        <trim prefix=" values(" suffix=")">
+            <if test="id != null and id != ''">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passWord != null">
+                #{passWord,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 通过唯一值查询用户(id,account) -->
+    <select id="getUserBySole" resultMap="BaseMap" parameterType="com.pts.model.User">
+        select
+        <include refid="BaseFiled"/>
+         from `p_user`
+        <trim prefix=" where " suffixOverrides="AND|OR">
+            <if test="id != null">
+                `id` = #{id,jdbcType=VARCHAR} AND
+            </if>
+            <if test="account != null">
+                `account` = #{account,jdbcType=VARCHAR} AND
+            </if>
+        </trim>
+    </select>
+
+    <!-- 查询用户 -->
+    <select id="getUser" resultMap="BaseMap" parameterType="com.pts.model.User">
+        select
+        <include refid="BaseFiled"/>
+        from `p_user`
+        <trim prefix=" where " suffixOverrides="AND|OR">
+            <if test="id != null">
+                `id` = #{id,jdbcType=VARCHAR} AND
+            </if>
+            <if test="account != null">
+                `account` = #{account,jdbcType=VARCHAR} AND
+            </if>
+            <if test="userName != null">
+                `username` = #{userName,jdbcType=VARCHAR} AND
+            </if>
+            <if test="passWord != null">
+                `password` = #{passWord,jdbcType=VARCHAR} AND
+            </if>
+            <if test="roleName != null">
+                `role_name` = #{roleName,jdbcType=VARCHAR} AND
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER} AND
+            </if>
+            <if test="exceptionDesc != null">
+                `exception_desc` = #{exceptionDesc,jdbcType=VARCHAR} AND
+            </if>
+        </trim>
+    </select>
+</mapper>

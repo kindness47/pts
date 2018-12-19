@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pts.dao.OrganizationDao">
+    <resultMap id="BaseMap" type="com.pts.model.Organization">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"></result>
+        <result column="organization_short_name" property="organizationShortName" jdbcType="VARCHAR"></result>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"></result>
+        <result column="level" property="level" jdbcType="INTEGER"></result>
+        <result column="sort" property="sort" jdbcType="INTEGER"></result>
+        <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="exception_desc" property="exceptionDesc" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"></result>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"></result>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"></result>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <resultMap id="organizationVOMap" type="com.pts.vo.OrganizationVO" extends="BaseMap">
+        <result column="parent_name" property="parentName" jdbcType="VARCHAR"></result>
+        <result column="parent_short_name" property="parentShortName" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <sql id="BaseFiled">
+        `id`,`organization_name`,`organization_short_name`,`parent_id`,`status`,`level`,`sort`,
+        `exception_desc`,`create_time`,`create_by`,`update_time`,`update_by`
+    </sql>
+
+    <select id="getOrganizationById" resultMap="BaseMap">
+        select <include refid="BaseFiled"/> from `p_organization` where `id`=#{id,jdbcType=VARCHAR}
+    </select>
+
+    <!--插入-->
+    <insert id="insert" parameterType="com.pts.model.Permission">
+        INSERT INTO `p_organization`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">
+                `id`,
+            </if>
+            <if test="organizationName != null">
+                `organization_name`,
+            </if>
+            <if test="organizationShortName != null">
+                `organization_short_name`,
+            </if>
+            <if test="parentId != null">
+                `parent_id`,
+            </if>
+            <if test="level != null">
+                `level`,
+            </if>
+            <if test="sort != null">
+                `sort`,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="createBy != null">
+                `create_by`,
+            </if>
+            <if test="createTime != null">
+                `create_time`,
+            </if>
+        </trim>
+        <trim prefix=" values(" suffix=")">
+            <if test="id != null and id != ''">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationName != null">
+                #{organizationName,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationShortName != null">
+                #{organizationShortName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                #{level,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 获取所有有效组织机构 -->
+    <select id="getAllOrganization" resultMap="organizationVOMap" parameterType="com.pts.vo.OrganizationVO">
+        SELECT oz2.`organization_name` as `parent_name`,oz2.`organization_short_name` as `parent_short_name`,oz.*
+        FROM `p_organization` oz
+        LEFT JOIN (SELECT oz1.`organization_name`,oz1.`organization_short_name`,oz1.`id`
+                     FROM `p_organization` oz1 WHERE oz1.`status` = 1) oz2
+        ON oz2.`id` = oz.`parent_id` WHERE oz.`status` = 1
+        ORDER BY oz.`level`,oz.`sort` asc
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!-- 通过特定值获取组织机构 -->
+    <select id="getAllOrganizationBySole" resultMap="organizationVOMap" parameterType="com.pts.vo.OrganizationVO">
+        SELECT oz2.`organization_name` as `parent_name`,oz2.`organization_short_name` as `parent_short_name`,oz.*
+        FROM (select
+        <include refid="BaseFiled"/>
+        from `p_organization`
+        <trim prefix=" where " suffixOverrides="AND|OR">
+            <if test="id != null">
+                `id` = #{id,jdbcType=VARCHAR} AND
+            </if>
+            <if test="organizationName != null">
+                `organization_name` = #{organizationName,jdbcType=VARCHAR} AND
+            </if>
+            <if test="organizationShortName != null">
+                `organization_short_name` = #{organizationShortName,jdbcType=VARCHAR} AND
+            </if>
+            <if test="level != null">
+                `level` = #{level,jdbcType=INTEGER} AND
+            </if>
+        </trim>
+        )oz
+        LEFT JOIN (SELECT oz1.`organization_name`,oz1.`organization_short_name`,oz1.`id`
+        FROM `p_organization` oz1 WHERE oz1.`status` = 1) oz2
+        ON oz2.`id` = oz.`parent_id`
+        <if test="status != null">
+            WHERE oz.`status` = #{status,jdbcType=INTEGER}
+        </if>
+
+        ORDER BY oz.`level`,oz.`sort` ASC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getOrganizationsCount" parameterType="com.pts.vo.OrganizationVO" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM(
+          SELECT oz2.`organization_name` AS `parent_name`,oz2.`organization_short_name` AS `parent_short_name`,oz.*
+            FROM `p_organization` oz
+            LEFT JOIN (SELECT oz1.`organization_name`,oz1.`organization_short_name`,oz1.`id`
+                         FROM `p_organization` oz1 WHERE oz1.`status` = 1) oz2
+            ON oz2.`id` = oz.`parent_id`
+            <if test="status != null">
+                WHERE oz.`status` = #{status,jdbcType=INTEGER}
+            </if>
+            ORDER BY oz.`level`,oz.`sort` ASC) t
+    </select>
+
+    <delete id="deleteOrganizationBySole" parameterType="com.pts.model.Permission">
+        delete from `p_organization` where
+        <trim suffixOverrides="AND|OR">
+            <if test="id != null">
+                `id` = #{id,jdbcType=VARCHAR} AND
+            </if>
+            <if test="organizationName != null">
+                `organization_name` = #{organizationName,jdbcType=VARCHAR} AND
+            </if>
+            <if test="organizationShortName != null">
+                `organization_short_name` = #{organizationShortName,jdbcType=VARCHAR} AND
+            </if>
+        </trim>
+    </delete>
+
+    <update id="update" parameterType="com.pts.model.Organization">
+        update `p_organization`
+        <set>
+            <if test="organizationName != null">
+                `organization_name`=#{organizationName,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationShortName != null">
+                `organization_short_name`=#{organizationShortName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                `parent_id`=#{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                `level`=#{level,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                `sort`=#{sort,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                `status`=#{status,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                `update_time`=#{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                `update_by`=#{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where
+        id=#{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

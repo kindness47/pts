@@ -30,6 +30,8 @@ function renderPageData(viewID,demoID,layPageID,page,limit,count,getItemsURL,isv
                     elem : layPageID,
                     count:count,
                     curr:page,
+                    first: '首页',
+                    last: '尾页',
                     limit:limit,
                     jump: function(obj, first){//obj是一个object类型。包括了分页的所有配置信息。first一个Boolean类，检测页面是否初始加载。非常有用，可避免无限刷新。
                         page = obj.curr;

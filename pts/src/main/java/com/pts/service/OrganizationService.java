@@ -4,6 +4,7 @@ import com.pts.model.Organization;
 import com.pts.vo.OrganizationVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OrganizationService {
     //获取Organization
@@ -18,4 +19,7 @@ public interface OrganizationService {
     int deleteOrganizationBySole(Organization organization);
     //获取数量
     int getOrganizationsCount(OrganizationVO organizationVO);
+
+    Organization getOrganizationBySole(Organization organization);
+    int getMaxSort(Map map);
 }

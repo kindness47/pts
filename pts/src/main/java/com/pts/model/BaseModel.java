@@ -13,7 +13,7 @@ import java.util.Date;
 public class BaseModel implements Serializable {
     //主键id
     private String id;
-    //状态码 1:可用 2:不可用
+    //状态码 1:可用 0:不可用
     private Integer status;
     //创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

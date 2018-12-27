@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
@@ -46,5 +47,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public int getOrganizationsCount(OrganizationVO organizationVO) {
         return organizationDao.getOrganizationsCount(organizationVO);
+    }
+
+    @Override
+    public Organization getOrganizationBySole(Organization organization) {
+        return organizationDao.getOrganizationBySole(organization);
+    }
+
+    @Override
+    public int getMaxSort(Map map) {
+        return organizationDao.getMaxSort(map);
     }
 }

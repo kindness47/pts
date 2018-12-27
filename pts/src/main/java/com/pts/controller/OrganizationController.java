@@ -1,15 +1,17 @@
 package com.pts.controller;
 
+import com.pts.base.Constants;
 import com.pts.base.Response;
 import com.pts.model.Organization;
 import com.pts.service.OrganizationService;
+import com.pts.util.SystemUtil;
 import com.pts.vo.OrganizationVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class OrganizationController extends BaseController {
@@ -33,8 +35,6 @@ public class OrganizationController extends BaseController {
             organizationVO.setLimit(10);
         }
         List<OrganizationVO> organizationVOList = organizationService.getOrganizations(organizationVO);
-        for(OrganizationVO organizationVO1 : organizationVOList)
-            System.out.println("---------------->"+organizationVO1.getExceptionDesc());
         return returnSuccess(organizationVOList);
     }
 
@@ -56,8 +56,8 @@ public class OrganizationController extends BaseController {
      */
     @RequestMapping(value = "/organization-tree-list",method = RequestMethod.GET)
     @ResponseBody
-    public Response organizationTreeList(){
-        List<OrganizationVO> organizationList = organizationService.getOrganizations(null);
+    public Response organizationTreeList(OrganizationVO organizationVO){
+        List<OrganizationVO> organizationList = organizationService.getOrganizations(organizationVO);
         return returnSuccess(organizationList);
     }
 
@@ -90,10 +90,41 @@ public class OrganizationController extends BaseController {
     @ResponseBody
     public Response organizationsSave(Organization organization){
         if(organization.getId() == null){
+            if(organization.getOrganizationName().equals("") || organization.getOrganizationName() == null)
+                return returnValidateError("机构名不能为空");
+            if(organization.getOrganizationShortName().equals("") || organization.getOrganizationShortName() == null)
+                return  returnValidateError("机构简称不能为空");
             //新增
-            return returnSuccess("新增成功");
+            //查询父节点level,并设置当前
+            if(organization.getParentId() != null){
+                Organization parentOrganization = organizationService.getOrganizationById(organization.getParentId());
+                switch (parentOrganization.getLevel()){
+                    case 1: organization.setLevel(Constants.LEVEL2);
+                    case 2: organization.setLevel(Constants.LEVEL3);
+                }
+            }
+
+            organization.setId(UUID.randomUUID().toString().replace("-",""));
+            organization.setStatus(1);
+            organization.setCreateBy(SystemUtil.getLoginUser());
+            organization.setCreateTime(new Date(System.currentTimeMillis()));
+            int sum = organizationService.insert(organization);
+            if (sum > 0)
+                return returnSuccess("新增成功");
+            else
+                return returnValidateError("新增失败");
         }else{
             //修改
+            organization.setUpdateBy(SystemUtil.getLoginUser());
+            organization.setUpdateTime(new Date(System.currentTimeMillis()));
+            //如果停用且未输入停用理由，给予默认值
+            if(organization.getStatus() == 0 && organization.getExceptionDesc().isEmpty()){
+                organization.setExceptionDesc("操作员未填写停用理由");
+            }
+            //如果启用，设置异常描述为""
+            if(organization.getStatus() ==1)
+                organization.setExceptionDesc("");
+            organizationService.update(organization);
             return returnSuccess("修改成功");
         }
     }
@@ -106,5 +137,78 @@ public class OrganizationController extends BaseController {
     @ResponseBody
     public Response organizationDelete(@PathVariable("id") String id){
         return returnSuccess("成功");
+    }
+
+    @RequestMapping(value = "/organization-sort")
+    public String organizationSort(){
+        return "pts/organization-sort";
+    }
+
+    /**
+     * Description： 排序改变
+     * Author: 刘永红
+     * Date: Created in 2018/12/27 16:49
+     */
+    @RequestMapping(value = "/organization-sort-change",method = RequestMethod.POST)
+    @ResponseBody
+    public Response organizationSortChange(String id,Integer sort,Integer level,String op){
+        Organization o = new Organization();
+        Map<String,Object> map = new HashMap();
+        if(op.equals("up")){
+            //排序上移一位   1:查出当前level的上一个排序 2:交换
+            map.put("MIN","min");
+            int minSort = organizationService.getMaxSort(map);
+            if(sort == minSort)
+                return returnValidateError("已是当前层级第一");
+            o.setLevel(level);
+            o.setSort(sort-1);
+            Organization preOrganization = organizationService.getOrganizationBySole(o);
+            if(preOrganization == null) {
+                //如果前一个序号为空
+                Organization thisOrganization = new Organization();
+                thisOrganization.setId(id);
+                thisOrganization.setSort(sort - 1);
+                organizationService.update(thisOrganization);
+            }else{
+                //如果不为空
+                preOrganization.setSort(sort);
+                preOrganization.setId(preOrganization.getId());
+                organizationService.update(preOrganization);
+                Organization thisOrganization = new Organization();
+                thisOrganization.setId(id);
+                thisOrganization.setSort(sort - 1);
+                organizationService.update(thisOrganization);
+            }
+        }else if(op.equals("down")){
+            //排序下移一位   1:查出当前level的下一个排序 2:交换
+            map.put("MAX","max");
+            int maxSort = organizationService.getMaxSort(map);
+            if(sort == maxSort)
+                return returnValidateError("已是当前层级最后");
+            o.setLevel(level);
+            o.setSort(sort+1);
+            Organization preOrganization = organizationService.getOrganizationBySole(o);
+            if(preOrganization == null) {
+                //如果后一个序号为空
+                Organization thisOrganization = new Organization();
+                thisOrganization.setId(id);
+                thisOrganization.setSort(sort + 1);
+                organizationService.update(thisOrganization);
+            }else{
+                //如果不为空
+                preOrganization.setSort(sort);
+                preOrganization.setId(preOrganization.getId());
+                organizationService.update(preOrganization);
+                Organization thisOrganization = new Organization();
+                thisOrganization.setId(id);
+                thisOrganization.setSort(sort + 1);
+                organizationService.update(thisOrganization);
+            }
+        }else if(op.equals("tofirst")){
+            //设置为排序第一
+        }else if(op.equals("tolast")){
+            //设置为排序最后
+        }
+        return returnSuccess("操作成功");
     }
 }

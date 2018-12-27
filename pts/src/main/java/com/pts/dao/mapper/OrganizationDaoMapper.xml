@@ -30,6 +30,40 @@
         select <include refid="BaseFiled"/> from `p_organization` where `id`=#{id,jdbcType=VARCHAR}
     </select>
 
+    <select id="getOrganizationBySole" resultType="BaseMap">
+        select <include refid="BaseFiled"/> from `p_organization`
+        <where>
+            <trim suffixOverrides="AND|OR">
+                <if test="id != null">
+                    `id` = #{id,jdbcType=VARCHAR} AND
+                </if>
+                <if test="organizationName != null">
+                    `organization_name` = #{organizationName,jdbcType=VARCHAR} AND
+                </if>
+                <if test="organizationShortName != null">
+                    `organization_short_name` = #{organizationShortName,jdbcType=VARCHAR} AND
+                </if>
+                <if test="level != null">
+                    `level` = #{level,jdbcType=INTEGER} AND
+                </if>
+                <if test="sort != null">
+                    `sort` = #{sort,jdbcType=INTEGER} AND
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <select id="getMaxSort" parameterType="java.util.Map">
+        SELECT
+        <if test="MAX != null">
+            MAX(`sort`)
+        </if>
+        <if test="MIN != null">
+            MIN(`sort`)
+        </if>
+         FROM `p_organization`
+    </select>
+
     <!--插入-->
     <insert id="insert" parameterType="com.pts.model.Permission">
         INSERT INTO `p_organization`
@@ -125,6 +159,9 @@
             <if test="level != null">
                 `level` = #{level,jdbcType=INTEGER} AND
             </if>
+            <if test="sort != null">
+                `sort` = #{sort,jdbcType=INTEGER} AND
+            </if>
         </trim>
         )oz
         LEFT JOIN (SELECT oz1.`organization_name`,oz1.`organization_short_name`,oz1.`id`
@@ -194,6 +231,9 @@
             </if>
             <if test="updateBy != null">
                 `update_by`=#{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionDesc != null">
+                `exception_desc`=#{exceptionDesc,jdbcType=VARCHAR},
             </if>
         </set>
         where

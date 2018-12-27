@@ -26,7 +26,9 @@
         <div><a class="btn btn-default radius r" style="line-height:0.8em;margin-top:1px;margin-right:1px;padding-left: 3px;padding-right: 3px;height: 22px;" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></div>
 
         <div class="c1 bg-1 pd-5 mt-30">
-            <a href="javascript:;" class="btn btn-secondary radius" onclick="organization_add()"><i class="Hui-iconfont">&#xe600;</i>新增</a>
+            <a href="javascript:;" class="btn btn-secondary radius" onclick="organization_sort()">
+                <i class="Hui-iconfont">&#xe600;</i>排序
+            </a>
 
         </div>
 
@@ -40,6 +42,8 @@
                     <th>父级组织机构名</th>
                     <th>创建时间</th>
                     <th>创建人</th>
+                    <th>更新时间</th>
+                    <th>操作人</th>
                     <th>状态</th>
                 </tr>
             </thead>
@@ -73,6 +77,11 @@
                     {{ date }}
                 </td>
                 <td>{{o.createBy }}</td>
+                <td>
+                    {{# var date = timestampToTime(o.updateTime) }}
+                    {{ date }}
+                </td>
+                <td>{{o.updateBy == null ? "" : o.updateBy }}</td>
                 <td>
                     {{# if(o.status === 1){     }}
                         √
@@ -199,7 +208,10 @@
         url:"${ptsStatic}/organizations-count",
         dataType:"json",
         success:function (data) {
-            renderPageData("tbody-view","demo","table-page",1,4,data.result,"${ptsStatic}/organizations",null);
+            if(data.success)
+                renderPageData("tbody-view","demo","table-page",1,4,data.result,"${ptsStatic}/organizations",null);
+            else
+                layer.msg("数量获取失败",{icon:2,time:1500});
         },
         error:function(data){
             alert("数量获取失败");
@@ -207,14 +219,24 @@
     });
 
     var organization_setStatus = function(id,status){
-        $.post("${ptsStatic}/organization-save",{"id":id,"status":status},function (data) {
-            if(data.success)
-                layer.msg(data.message,{icon:1,time:1500},function(){
-                    location.reload();
+        var optitle = status == "1"?"启用":"停用";
+        var htmlStr = status =="1"?"确认启用吗":"<label class=\"layui-form-label\" style=\"text-align:left\">操作缘由</label><textarea placeholder=\"请输入内容\" id=\"exceptionDesc\" class=\"layui-textarea\"></textarea>";
+        layer.open({
+            title:optitle+"操作"
+            ,content:htmlStr
+            ,yes:function (index,layero) {
+               var exceptionDesc = $("#exceptionDesc").val();
+               var changeData = status =="1"?{"id":id,"status":status}:{"id":id,"status":status,"exceptionDesc":exceptionDesc};
+               $.post("${ptsStatic}/organization-save",changeData,function (data) {
+                    if(data.success)
+                        layer.msg(data.message,{icon:1,time:1500},function(){
+                            location.reload();
+                        });
+                    else
+                        layer.msg(data.message,{icon:2,time:1500});
                 });
-            else
-                layer.msg(data.message,{icon:2,time:1500});
-        });
+            }
+         });
     }
 
     var organization_delete = function(id){
@@ -237,13 +259,21 @@
 
 
     }
-
-
-
+    //异常提示信息
     $( "#tbody-view" ).undelegate().delegate("#show-option","mouseenter",function () {
         var title=$(this).attr("title");
         layer.tips(title,this,{tips:1});
     });
+    //进入排序页面
+    var organization_sort = function () {
+        var index = layer.open({
+            type:2
+            ,title:"高级排序"
+            ,content:"organization-sort"
+            ,anim:5
+        });
+        layer.full(index);
+    }
 </script>
 </body>
 </html>

@@ -173,6 +173,7 @@
         $.ajax({
             type:"get",
             contentType:"application/json",
+            data:{status:1},
             dataType:"json",
             url:"${ptsStatic}/organization-tree-list",
             async:false,

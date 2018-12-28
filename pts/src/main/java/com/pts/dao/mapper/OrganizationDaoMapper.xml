@@ -30,7 +30,7 @@
         select <include refid="BaseFiled"/> from `p_organization` where `id`=#{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="getOrganizationBySole" resultType="BaseMap">
+    <select id="getOrganizationBySole" resultMap="BaseMap">
         select <include refid="BaseFiled"/> from `p_organization`
         <where>
             <trim suffixOverrides="AND|OR">
@@ -53,7 +53,7 @@
         </where>
     </select>
 
-    <select id="getMaxSort" parameterType="java.util.Map">
+    <select id="getMaxSort" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT
         <if test="MAX != null">
             MAX(`sort`)
@@ -61,7 +61,10 @@
         <if test="MIN != null">
             MIN(`sort`)
         </if>
-         FROM `p_organization`
+         FROM `p_organization` where `level` = #{level,jdbcType=VARCHAR}
+        <if test="parentId != null">
+            AND `parent_id`= #{parentId,jdbcType=VARCHAR}
+        </if>
     </select>
 
     <!--插入-->
@@ -96,7 +99,7 @@
                 `create_time`,
             </if>
         </trim>
-        <trim prefix=" values(" suffix=")">
+        <trim prefix=" values(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">
                 #{id,jdbcType=VARCHAR},
             </if>
@@ -155,6 +158,9 @@
             </if>
             <if test="organizationShortName != null">
                 `organization_short_name` = #{organizationShortName,jdbcType=VARCHAR} AND
+            </if>
+            <if test="parentId != null">
+                `parent_id` = #{parentId,jdbcType=VARCHAR} AND
             </if>
             <if test="level != null">
                 `level` = #{level,jdbcType=INTEGER} AND

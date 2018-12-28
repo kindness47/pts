@@ -9,4 +9,7 @@ public class Constants {
     public static final Integer LEVEL1 = 1;
     public static final Integer LEVEL2 = 2;
     public static final Integer LEVEL3 = 3;
+
+    //每页显示数量
+    public static final Integer SIZE = 10;
 }

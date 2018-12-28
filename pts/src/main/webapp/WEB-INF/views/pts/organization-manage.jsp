@@ -107,6 +107,8 @@
 
 <script type="text/javascript">
 
+    var size = 10;
+
     var layer;
     layui.use('layer',function () {
         layer = layui.layer;
@@ -187,7 +189,14 @@
         t = $.fn.zTree.init(t, setting, zNodes);
         //demoIframe = $("#testIframe");
         //demoIframe.on("load", loadReady);
+        //自动展开zTree
         var zTree = $.fn.zTree.getZTreeObj("OrganizationTree");
+        //默认返回所有根节点信息
+        var nodeList = zTree.getNodes();
+        for(var i = 0 ; i < nodeList.length ; i ++) {
+            if(nodeList[i].level == 0)
+                zTree.expandNode(nodeList[i], true);
+        }
         //zTree.selectNode(zTree.getNodeByParam("id",'11'));
     });
 
@@ -209,7 +218,7 @@
         dataType:"json",
         success:function (data) {
             if(data.success)
-                renderPageData("tbody-view","demo","table-page",1,4,data.result,"${ptsStatic}/organizations",null);
+                renderPageData("tbody-view","demo","table-page",1,size,data.result,"${ptsStatic}/organizations",null);
             else
                 layer.msg("数量获取失败",{icon:2,time:1500});
         },

@@ -85,13 +85,11 @@
                 success:function (data) {
                     if(data.success)
                         layer.msg(data.message,{icon:1,time:1500},function () {
+                            parent.location.reload();
                             layer_close();
                         });
                     else
                         layer.msg(data.message,{icon:2,time:1500});
-                },
-                end:function () {
-                    location.reload();
                 }
             });
         }

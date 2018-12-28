@@ -21,6 +21,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationDao.getOrganizationById(id);
     }
 
+
     @Override
     public List<OrganizationVO> getOrganizations(OrganizationVO organizationVO) {
         if(organizationVO == null)
@@ -41,7 +42,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public int deleteOrganizationBySole(Organization organization) {
-        return 0;
+        return organizationDao.deleteOrganizationBySole(organization);
     }
 
     @Override

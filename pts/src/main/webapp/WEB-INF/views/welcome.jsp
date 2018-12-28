@@ -26,8 +26,13 @@
 	<title>welcome</title>
 </head>
 <body>
-	<div class="label">欢迎您</div>
-	<div class="layui-btn" onclick="chulaibaPiKaQu()"></div>
+
+	<div class="label">
+		<label class="layui-form-label ml-5">欢迎您</label>
+		<label class="layui-form-label" disabled="true">${user.userName}</label>
+	</div>
+
+	<div class="layui-btn" onclick="chulaibaPiKaQu()">专用绿帽弹窗</div>
 
 
 

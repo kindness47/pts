@@ -111,6 +111,8 @@
 
 <script type="text/javascript">
 
+    var size = 10;
+
     var layer;
     layui.use('layer',function () {
         layer = layui.layer;
@@ -192,7 +194,15 @@
         t = $.fn.zTree.init(t, setting, zNodes);
         //demoIframe = $("#testIframe");
         //demoIframe.on("load", loadReady);
+
+        //自动展开节点
         var zTree = $.fn.zTree.getZTreeObj("OrganizationTree");
+        //默认返回所有根节点信息
+        var nodeList = zTree.getNodes();
+        for(var i = 0 ; i < nodeList.length ; i ++) {
+            if(nodeList[i].level == 0)
+                zTree.expandNode(nodeList[i], true);
+        }
         //zTree.selectNode(zTree.getNodeByParam("id",'11'));
     });
 
@@ -214,7 +224,7 @@
         url:"${ptsStatic}/organizations-count",
         dataType:"json",
         success:function (data) {
-            renderPageData("tbody-view","demo","table-page",1,2,data.result,"${ptsStatic}/organizations","1");
+            renderPageData("tbody-view","demo","table-page",1,size,data.result,"${ptsStatic}/organizations","1");
         },
         error:function(data){
             alert("数量获取失败");

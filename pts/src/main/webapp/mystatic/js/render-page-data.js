@@ -8,7 +8,7 @@
 function renderPageData(viewID,demoID,layPageID,page,limit,count,getItemsURL,isvalid){
     if(page == 0 && limit == 0){
         page = 1;
-        limit = 4;
+        limit = 10;
     }
     var data;
 

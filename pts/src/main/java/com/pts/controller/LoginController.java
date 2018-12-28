@@ -31,7 +31,7 @@ public class LoginController extends BaseController{
         UsernamePasswordToken token = new UsernamePasswordToken(user.getAccount(),user.getPassWord(),null);
         try{
             subject.login(token);
-            User user1 = (User)SystemUtil.getSession().getAttribute("user");
+            User user1 = SystemUtil.getSessionUser();
             model.addAttribute("user",user1);
         }catch (Exception e){
             System.out.println("-----------------登陆失败:"+e.getMessage());

@@ -15,14 +15,17 @@
     </style>
 </head>
 <body class="layui-container">
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
     <legend>机构排序</legend>
 </fieldset>
 
-<table class="table table-border table-bordered table-hover table-bg table-sort mt-20">
+<span class="layui-breadcrumb" id="sort-nav" lay-separator="->"></span>
+
+<table class="table table-border table-bordered table-hover table-bg table-sort">
     <colgroup>
-        <col width="150">
+        <col width="110">
         <col width="100">
+        <col width="110">
         <col width="70">
         <col width="50">
         <col width="50">
@@ -32,6 +35,7 @@
         <tr class="layui-text text-c">
             <th>组织机构名</th>
             <th>组织机构简称</th>
+            <th>父级机构</th>
             <th>组织机构层级</th>
             <th>sort</th>
             <th>状态</th>
@@ -47,8 +51,9 @@
 <script type="text/html" id="organization-sort-table-demo">
     {{# layui.each(d,function(index,o){ }}
         <tr class="text-c">
-            <td>{{ o.organizationName }}</td>
+            <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></td>
             <td>{{ o.organizationShortName }}</td>
+            <td>{{ o.parentName == null ? "":o.parentName }}</td>
             <td>{{ o.level }}</td>
             <td>{{ o.sort }}</td>
             <td>
@@ -59,10 +64,10 @@
                 {{# } }}
             </td>
             <td>
-                <a title="上移一位" id="ss" href="javascript:;" onclick="change_organization_sort_toup('{{ o.id }}','{{ o.level }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe679;</i></a>
-                <a title="下移一位" href="javascript:;" onclick="change_organization_sort_todown('{{ o.id }}','{{ o.level }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe674;</i></a>
-                <a title="移到最前" href="javascript:;" onclick="change_organization_sort_tofirstup('{{ o.id }}','{{ o.level }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe699;</i></a>
-                <a title="移到最后" href="javascript:;" onclick="change_organization_sort_tolastdown('{{ o.id }}','{{ o.level }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe698;</i></a>
+                <a title="上移一位" id="ss" href="javascript:;" onclick="change_organization_sort_toup('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe679;</i></a>
+                <a title="下移一位" href="javascript:;" onclick="change_organization_sort_todown('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe674;</i></a>
+                <a title="移到最前" href="javascript:;" onclick="change_organization_sort_tofirstup('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe699;</i></a>
+                <a title="移到最后" href="javascript:;" onclick="change_organization_sort_tolastdown('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe698;</i></a>
             </td>
         </tr>
     {{# }); }}
@@ -80,50 +85,89 @@
 
     var size = 10;
 
+    layui.use('element',function () {
+       var element = layui.element;
+    });
+
     $("#organization-sort-table-tbody").on('tooltip','a',{
         show:{
             effect: "slideDown",
             delay: 250
         }
     });
+    var current_page_id = "0";
+    //定义导航栏数组和存储的参数 navParams{"id":当前点击元素的id,"level":当前点击元素level}
+    var navList = new Array(),navParams;
+    var get_count_and_render_paged_data = function(parentId,level,name){
+        current_page_id = parentId;
+        $.post("${ptsStatic}/organizations-count",{"parentId":parentId},function (data) {
+            if(data.success){
+                var count = data.result;
+                var params={"parentId":parentId};
+                renderPageData("organization-sort-table-tbody","organization-sort-table-demo","sort-page",params,count,"${ptsStatic}/organizations");
+
+                navParams = {"id":parentId,"level":level,"name":name};
+                //根据点击的元素level,操作navList
+                var newNavList = new Array();
+                switch(level) {
+                    case '0'://点击首页
+                        navList = [];
+                        navList.push(navParams);
+                        showNav(navList);
+                        break;
+                    case '1'://点击的元素level为1
+                        newNavList = [];
+                        newNavList[0] = navList[0];
+                        newNavList.push(navParams);
+                        showNav(newNavList);
+                        break;
+                    case '2'://点击元素level为2
+                        newNavList = [];
+                        newNavList[0] = navList[0];
+                        newNavList[1] = navList[1];
+                        newNavList.push(navParams);
+                        showNav(newNavList);
+                        break;
+                }
+            }else
+                layer.msg("当前机构下没有子机构，不能进行排序",{icon:2,time:1500});
+        })
+    }
+
+    get_count_and_render_paged_data(current_page_id,'0',"首页");
+
+    var showNav = function (list) {
+        var htmlStr = "";
+
+        for(var i = 0 ; i < list.length ; i ++){
+            alert(list[i].id+"-->"+list[i].name);
+            htmlStr += "<a href='javascript:;' onclick='get_count_and_render_paged_data("+list[i].id+","+list[i].level+","+list[i].name+")>"+name+"</a><br/>";
+        }
+        $("#sort-nav").html(htmlStr);
+    }
+
+    var change_organization_sort_toup = function (id,level,parentId,sort) {
+        change_organization_sort(id,sort,level,parentId,"up");
+    }
+    var change_organization_sort_todown = function (id,level,parentId,sort) {
+        change_organization_sort(id,sort,level,parentId,"down");
+    }
+    var change_organization_sort_tofirstup = function (id,level,parentId,sort) {
+        change_organization_sort(id,sort,level,parentId,"tofirst");
+    }
+    var change_organization_sort_tolastdown = function (id,level,parentId,sort) {
+        change_organization_sort(id,sort,level,parentId,"tolast");
+    }
 
 
-    //渲染分页、表格的函数
-    var renderPageTable = function(data){
-        renderPageData("organization-sort-table-tbody","organization-sort-table-demo","sort-page",1,size,count,"${ptsStatic}/organizations",null);
-    }
-
-    //记录count
-    var count;
-    //获取count
-    $.post("${ptsStatic}/organizations-count",function (data) {
-        if(data.success){
-            count = data.result;
-            renderPageTable(data);
-        }else
-            layer.msg("数量获取失败",{icon:2,time:1500});
-    })
-
-    var change_organization_sort_toup = function (id,level,sort) {
-        change_organization_sort(id,sort,level,"up");
-    }
-    var change_organization_sort_todown = function (id,level,sort) {
-        change_organization_sort(id,sort,level,"down");
-    }
-    var change_organization_sort_tofirstup = function (id,level,sort) {
-        change_organization_sort(id,sort,level,"tofirst");
-    }
-    var change_organization_sort_tolastdown = function (id,level,sort) {
-        change_organization_sort(id,sort,level,"tolast");
-    }
-    var change_organization_sort = function (id,sort,level,op) {
+    var change_organization_sort = function (id,sort,level,parentId,op) {
         //请求排序操作
-        $.post("organization-sort-change",{"id":id,"sort":sort,"level":level,"op":op},function (data) {
+        $.post("organization-sort-change",{"id":id,"sort":sort,"level":level,"parentId":parentId,"op":op},function (data) {
             layui.use('layer',function () {
                 var layer = layui.layer;
                 if(data.success){
                     layer.msg("操作成功",{icon:1,time:1500},function () {
-                        renderPageTable(data);
+                        get_count_and_render_paged_data(current_page_id);
                     });
                 }else
                     layer.msg(data.message,{icon:2,time:1500});
@@ -132,16 +176,14 @@
         });
     }
 
-    $("#organization-sort-table-tbody ").find("a").click(function () {
-        alert("sdsadsadsadsa");
-    });
+
+
     $(document).tooltip({
         show: {
             effect: "slideDown",
             delay: 10
         }
     });
-
     $("body").on("click",$("div[role='tooltip']"),function () {
        $("div[role='tooltip']").remove();
     })

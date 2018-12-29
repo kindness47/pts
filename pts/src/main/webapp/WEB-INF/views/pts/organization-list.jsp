@@ -39,7 +39,6 @@
                     <th>父级组织机构名</th>
                     <th>创建时间</th>
                     <th>创建人</th>
-                    <th>状态</th>
                 </tr>
             </thead>
             <tbody id="tbody-view">
@@ -87,13 +86,6 @@
                     {{ date }}
                 </td>
                 <td>{{o.createBy }}</td>
-                <td>
-                    {{# if(o.status === 1){     }}
-                        √
-                    {{# }else{ }}
-                        <a href="javascript:;" id="show-option" class="c-red" title='{{ o.exceptionDesc }}'>×</a>
-                    {{# } }}
-                </td>
             </tr>
         {{# } }}
     </script>
@@ -224,7 +216,8 @@
         url:"${ptsStatic}/organizations-count",
         dataType:"json",
         success:function (data) {
-            renderPageData("tbody-view","demo","table-page",1,size,data.result,"${ptsStatic}/organizations","1");
+            var params={"status":1};
+            renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations");
         },
         error:function(data){
             alert("数量获取失败");

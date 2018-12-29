@@ -1,23 +1,26 @@
 /**
  * Description： 分页封装
- * Params:viewID:需要渲染的视图ID;demoID:模板ID;layPageID:分页插件ID;page:页码;limit:每页数量;count:数据总量;
-*                getItemsURL:获取展示项url;isvalid:获取的item状态
+ * Params:viewID:需要渲染的视图ID;demoID:模板ID;layPageID:分页插件ID;
+ * params:数据[page,limit必需,如果为undefined将会初始化为page:1,limit:10   其它VO对象参数任选~~~];
+ * getItemsURL:获取展示项url;
  * Author: 刘永红
  * Date: Created in 2018/12/11 17:21
  */
-function renderPageData(viewID,demoID,layPageID,page,limit,count,getItemsURL,isvalid){
-    if(page == 0 && limit == 0){
-        page = 1;
-        limit = 10;
-    }
-    var data;
+function renderPageData(viewID,demoID,layPageID,params,count,getItemsURL){
+    //初始化page limit
+    if(params == null)
+        var params = {"page":1,"limit":10};
+    if(params.page == undefined)
+        params.page = 1;
+    if(params.limit == undefined)
+        params.limit = 10;
 
-    var data= isvalid == null ?{'page':page,'limit':limit}:{'page':page,'limit':limit,'status':isvalid};
+    //var data= isvalid == null ?{'page':page,'limit':limit}:{'page':page,'limit':limit,'status':isvalid};
     //获取第page页列表
     $.ajax({
         type:"post",
         url: getItemsURL,
-        data:data,
+        data:params,
         contentType:"application/x-www-form-urlencoded;charset=UTF-8",
         dataType:"json",
         success:function (data) {
@@ -29,15 +32,15 @@ function renderPageData(viewID,demoID,layPageID,page,limit,count,getItemsURL,isv
                 laypage.render({
                     elem : layPageID,
                     count:count,
-                    curr:page,
+                    curr:params.page,
                     first: '首页',
                     last: '尾页',
-                    limit:limit,
+                    limit:params.limit,
                     jump: function(obj, first){//obj是一个object类型。包括了分页的所有配置信息。first一个Boolean类，检测页面是否初始加载。非常有用，可避免无限刷新。
-                        page = obj.curr;
-                        limit = obj.limit;
+                        params.page = obj.curr;
+                        params.limit = obj.limit;
                         if(!first){
-                            renderPageData(viewID,demoID,layPageID,page,limit,count,getItemsURL,isvalid)
+                            renderPageData(viewID,demoID,layPageID,params,count,getItemsURL);
                         }
                     }
                 });

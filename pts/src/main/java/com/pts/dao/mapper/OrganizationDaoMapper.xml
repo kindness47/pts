@@ -49,6 +49,9 @@
                 <if test="sort != null">
                     `sort` = #{sort,jdbcType=INTEGER} AND
                 </if>
+                <if test="parentId != null">
+                    `parent_id` = #{parentId,jdbcType=VARCHAR} AND
+                </if>
             </trim>
         </where>
     </select>
@@ -190,9 +193,14 @@
             LEFT JOIN (SELECT oz1.`organization_name`,oz1.`organization_short_name`,oz1.`id`
                          FROM `p_organization` oz1 WHERE oz1.`status` = 1) oz2
             ON oz2.`id` = oz.`parent_id`
-            <if test="status != null">
-                WHERE oz.`status` = #{status,jdbcType=INTEGER}
-            </if>
+            <trim prefix="where" suffixOverrides="AND|OR">
+                <if test="status != null">
+                    oz.`status` = #{status,jdbcType=INTEGER} AND
+                </if>
+                <if test="parentId != null">
+                    oz.`parent_id`= #{parentId,jdbcType=VARCHAR} AND
+                </if>
+            </trim>
             ORDER BY oz.`level`,oz.`sort` ASC) t
     </select>
 

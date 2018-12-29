@@ -217,9 +217,9 @@
         url:"${ptsStatic}/organizations-count",
         dataType:"json",
         success:function (data) {
-            if(data.success)
-                renderPageData("tbody-view","demo","table-page",1,size,data.result,"${ptsStatic}/organizations",null);
-            else
+            if(data.success){
+                renderPageData("tbody-view","demo","table-page",null,data.result,"${ptsStatic}/organizations");
+            }else
                 layer.msg("数量获取失败",{icon:2,time:1500});
         },
         error:function(data){

@@ -12,47 +12,49 @@
     <style type="text/css">
         .ui-tooltip{padding: 1px 8px;}
         .ui-widget{font-size: 0.7em;}
+        legend{margin-bottom:0px !important;}
     </style>
 </head>
 <body class="layui-container">
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-    <legend>机构排序</legend>
-</fieldset>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>机构排序</legend>
+    </fieldset>
 
-<span class="layui-breadcrumb" id="sort-nav" lay-separator="->"></span>
+    <div id="sort-nav" class="ml-10"></div>
 
-<table class="table table-border table-bordered table-hover table-bg table-sort">
-    <colgroup>
-        <col width="110">
-        <col width="100">
-        <col width="110">
-        <col width="70">
-        <col width="50">
-        <col width="50">
-        <col width="80">
-    </colgroup>
-    <thead>
-        <tr class="layui-text text-c">
-            <th>组织机构名</th>
-            <th>组织机构简称</th>
-            <th>父级机构</th>
-            <th>组织机构层级</th>
-            <th>sort</th>
-            <th>状态</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody id="organization-sort-table-tbody"></tbody>
-</table>
+    <table class="table table-border table-bordered table-hover table-bg table-sort mt-10">
+        <%--<colgroup>
+            <col width="110">
+            <col width="100">
+            <col width="110">
+            <col width="70">
+            <col width="50">
+            <col width="50">
+            <col width="80">
+        </colgroup>--%>
+        <thead>
+            <tr class="text-c">
+                <th>组织机构名</th>
+                <th>组织机构简称</th>
+                <th>父级机构</th>
+                <th>组织机构层级</th>
+                <th>sort</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="organization-sort-table-tbody"></tbody>
+    </table>
 
-<%--分页插件--%>
-<div id="sort-page"></div>
+    <%--分页插件--%>
+    <div id="sort-page"></div>
+
 
 <script type="text/html" id="organization-sort-table-demo">
     {{# layui.each(d,function(index,o){ }}
         <tr class="text-c">
             <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></td>
-            <td>{{ o.organizationShortName }}</td>
+            <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationShortName }}</a></td>
             <td>{{ o.parentName == null ? "":o.parentName }}</td>
             <td>{{ o.level }}</td>
             <td>{{ o.sort }}</td>
@@ -85,66 +87,81 @@
 
     var size = 10;
 
-    layui.use('element',function () {
-       var element = layui.element;
-    });
-
     $("#organization-sort-table-tbody").on('tooltip','a',{
         show:{
             effect: "slideDown",
             delay: 250
         }
     });
-    var current_page_id = "0";
+    //记录当前操作的对象id
+    var current_params = {"id":0,"level":0,"name":"首页"};
+    // navList用于记录导航栏数组
+    var navList = new Array();
     //定义导航栏数组和存储的参数 navParams{"id":当前点击元素的id,"level":当前点击元素level}
-    var navList = new Array(),navParams;
-    var get_count_and_render_paged_data = function(parentId,level,name){
-        current_page_id = parentId;
+    var navParams;
+
+    var showNav = function (list) {
+        var htmlStr = "<span class=\"layui-breadcrumb\" lay-separator=\"-->\">";
+
+        for(var i = 0 ; i < list.length ; i ++){
+            var info = list[i];
+            htmlStr += "<a href='javascript:;' onclick=get_count_and_render_paged_data('"+info.id+"','"+info.level+"','"+info.name+"')>"+info.name+"</a>";
+        }
+        htmlStr += "</span>";
+        $("#sort-nav").html(htmlStr);
+        layui.use('element',function () {
+           var element = layui.element;
+           element.render('breadcrumb');
+        });
+    }
+
+    var sort_organization_nav = function (id,level,organizationname) {
+        navParams = {"id":id,"level":level,"name":organizationname};
+        //newNavList用于操作展示导航栏数据
+        var newNavList = new Array();
+        switch(level) {
+            case '0'://点击首页
+                navList = [];
+                navList.push(navParams);
+                showNav(navList);
+                break;
+            case '1'://点击的元素level为1
+                newNavList = [];
+                newNavList[0] = navList[0];
+                newNavList.push(navParams);
+                //记录点击的节点
+                navList.push(navParams);
+                showNav(newNavList);
+                break;
+            case '2'://点击元素level为2
+                newNavList = [];
+                newNavList[0] = navList[0];
+                newNavList[1] = navList[1];
+                newNavList.push(navParams);
+                showNav(newNavList);
+                break;
+        }
+    }
+
+
+    var get_count_and_render_paged_data = function(parentId,level,organizationName){
         $.post("${ptsStatic}/organizations-count",{"parentId":parentId},function (data) {
             if(data.success){
                 var count = data.result;
                 var params={"parentId":parentId};
                 renderPageData("organization-sort-table-tbody","organization-sort-table-demo","sort-page",params,count,"${ptsStatic}/organizations");
-
-                navParams = {"id":parentId,"level":level,"name":name};
-                //根据点击的元素level,操作navList
-                var newNavList = new Array();
-                switch(level) {
-                    case '0'://点击首页
-                        navList = [];
-                        navList.push(navParams);
-                        showNav(navList);
-                        break;
-                    case '1'://点击的元素level为1
-                        newNavList = [];
-                        newNavList[0] = navList[0];
-                        newNavList.push(navParams);
-                        showNav(newNavList);
-                        break;
-                    case '2'://点击元素level为2
-                        newNavList = [];
-                        newNavList[0] = navList[0];
-                        newNavList[1] = navList[1];
-                        newNavList.push(navParams);
-                        showNav(newNavList);
-                        break;
-                }
+                sort_organization_nav(parentId.toString(),level.toString(),organizationName.toString());
             }else
-                layer.msg("当前机构下没有子机构，不能进行排序",{icon:2,time:1500});
-        })
+                layer.msg("当前机构下没有子机构",{icon:2,time:1500});
+        });
+        current_params.id = parentId;
+        current_params.level = level;
+        current_params.name = organizationName;
     }
 
-    get_count_and_render_paged_data(current_page_id,'0',"首页");
+    get_count_and_render_paged_data(current_params.id,current_params.level,current_params.name);
 
-    var showNav = function (list) {
-        var htmlStr = "";
 
-        for(var i = 0 ; i < list.length ; i ++){
-            alert(list[i].id+"-->"+list[i].name);
-            htmlStr += "<a href='javascript:;' onclick='get_count_and_render_paged_data("+list[i].id+","+list[i].level+","+list[i].name+")>"+name+"</a><br/>";
-        }
-        $("#sort-nav").html(htmlStr);
-    }
 
     var change_organization_sort_toup = function (id,level,parentId,sort) {
         change_organization_sort(id,sort,level,parentId,"up");
@@ -167,7 +184,7 @@
                 var layer = layui.layer;
                 if(data.success){
                     layer.msg("操作成功",{icon:1,time:1500},function () {
-                        get_count_and_render_paged_data(current_page_id);
+                        get_count_and_render_paged_data(current_params.id,current_params.level,current_params.name);
                     });
                 }else
                     layer.msg(data.message,{icon:2,time:1500});

@@ -36,10 +36,11 @@
         <table class="table table-border table-bordered table-hover table-bg table-sort mt-20">
             <thead>
                 <tr class="text-c">
-                    <th>操作</th>
-                    <th>组织机构名</th>
-                    <th>组织机构简称</th>
+                    <th id="organizationmanage-info-operation">操作</th>
+                    <th id="organizationmanage-info-organizationname">组织机构名</th>
+                    <th id="organizationmanage-info-organizationshortname">组织机构简称</th>
                     <th>父级组织机构名</th>
+                    <th>机构等级</th>
                     <th>创建时间</th>
                     <th>创建人</th>
                     <th>更新时间</th>
@@ -68,10 +69,10 @@
                     {{# } }}
                     <a title="删除" href="javascript:;" onclick="organization_delete('{{ o.id }}')"><i class="Hui-iconfont">&#xe609;</i></a>
                 </td>
-                <td>{{ o.organizationName }}</td>
-                <td>{{ o.organizationShortName }}</td>
+                <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></td>
+                <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationShortName }}</a></td>
                 <td>{{ o.parentName == null?"":o.parentName }}</td>
-                <%--<td><f:formatDate value="{{ o.createTime }}"  pattern="yyyy-MM-dd HH:mm:ss"></f:formatDate></td>--%>
+                <td>{{ o.level }}</td>
                 <td>
                     {{# var date = timestampToTime(o.createTime) }}
                     {{ date }}
@@ -211,21 +212,35 @@
             content: id==null?"organization-add":("organization-add?id="+id)
         });
     }
+    var get_count_and_render_paged_data = function(parentId,level,organizationName){
+        //alert(parentId == null);
+        var params = parentId == null ?null:{"parentId":parentId};
+        $.post("${ptsStatic}/organizations-count",params,function (data) {
+            if(data.success){
+                var params = parentId == null ?null:{"parentId":parentId};
+                renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations");
+                //sort_organization_nav(parentId.toString(),level.toString(),organizationName.toString());
+            }else
+                layer.msg("当前机构下没有子机构",{icon:2,time:1500});
+        });
+        current_page_id = parentId;
+    }
+    get_count_and_render_paged_data(null,null,"首页");
 
-    $.ajax({
+    /*$.ajax({
         type:"post",
-        url:"${ptsStatic}/organizations-count",
+        url:"\${ptsStatic}/organizations-count",
         dataType:"json",
         success:function (data) {
             if(data.success){
-                renderPageData("tbody-view","demo","table-page",null,data.result,"${ptsStatic}/organizations");
+                renderPageData("tbody-view","demo","table-page",null,data.result,"\${ptsStatic}/organizations");
             }else
                 layer.msg("数量获取失败",{icon:2,time:1500});
         },
         error:function(data){
             alert("数量获取失败");
         }
-    });
+    });*/
 
     var organization_setStatus = function(id,status){
         var optitle = status == "1"?"启用":"停用";
@@ -236,7 +251,7 @@
             ,yes:function (index,layero) {
                var exceptionDesc = $("#exceptionDesc").val();
                var changeData = status =="1"?{"id":id,"status":status}:{"id":id,"status":status,"exceptionDesc":exceptionDesc};
-               $.post("${ptsStatic}/organization-save",changeData,function (data) {
+               $.post("${ptsStatic}/changeOrganizationStatus",changeData,function (data) {
                     if(data.success)
                         layer.msg(data.message,{icon:1,time:1500},function(){
                             location.reload();

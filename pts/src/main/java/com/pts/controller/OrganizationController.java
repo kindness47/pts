@@ -100,8 +100,6 @@ public class OrganizationController extends BaseController {
             if(!StringUtils.isNullOrEmpty(organization.getParentId())){
                 //添加的不为一级
                 Organization parentOrganization = organizationService.getOrganizationById(organization.getParentId());
-                System.out.println("---------------------------------");
-                System.out.println(parentOrganization.getLevel());
                 switch (parentOrganization.getLevel()){
                     case 1: organization.setLevel(Constants.LEVEL2); break;
                     case 2: organization.setLevel(Constants.LEVEL3); break;
@@ -198,16 +196,6 @@ public class OrganizationController extends BaseController {
 
             organization.setUpdateBy(SystemUtil.getLoginUser());
             organization.setUpdateTime(new Date(System.currentTimeMillis()));
-            //如果停用且未输入停用理由，给予默认值
-            if(organization.getStatus() != null) {
-                //修改状态
-                if (organization.getStatus() == 0 && organization.getExceptionDesc().isEmpty()) {
-                    organization.setExceptionDesc("操作员未填写停用理由");
-                }
-                //如果启用，设置异常描述为""
-                if (organization.getStatus() == 1)
-                    organization.setExceptionDesc("");
-            }
 
             organizationService.update(organization);
             return returnSuccess("修改成功");
@@ -383,5 +371,28 @@ public class OrganizationController extends BaseController {
             organizationService.update(o);
         }
         return returnSuccess("操作成功");
+    }
+
+    /**
+     * Description： 组织机构停用启用
+     * Author: 刘永红
+     * Date: Created in 2019/1/2 12:53
+     */
+    @RequestMapping(value = "/changeOrganizationStatus",method = RequestMethod.POST)
+    @ResponseBody
+    public Response changeOrganizationStatus(Organization organization){
+        //如果停用且未输入停用理由，给予默认值
+        if (organization.getStatus() == 0 && StringUtils.isNullOrEmpty(organization.getExceptionDesc())) {
+            organization.setExceptionDesc("操作员未填写停用理由");
+        }
+        //如果启用，设置异常描述为""
+        if (organization.getStatus() == 1)
+            organization.setExceptionDesc("");
+
+        organization.setUpdateBy(SystemUtil.getLoginUser());
+        organization.setUpdateTime(new Date(System.currentTimeMillis()));
+
+        int i = organizationService.update(organization);
+        return i >0 ? returnSuccess("操作成功") : returnValidateError("操作失败");
     }
 }

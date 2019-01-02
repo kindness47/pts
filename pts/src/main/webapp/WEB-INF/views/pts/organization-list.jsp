@@ -71,8 +71,7 @@
 
     <%--  表格渲染模板引擎  --%>
     <script id="demo" type="text/html">
-        {{# for(var i = 0,len = d.length;i < len; i++){   }}
-        {{#      var o = d[i]; }}
+        {{# layui.each(d,function(index,o){   }}
             <tr class="text-c">
                 <td>
                     <a title="修改" href="javascript:;" onclick="organization_add('{{ o.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
@@ -80,14 +79,13 @@
                 <td>{{ o.organizationName }}</td>
                 <td>{{ o.organizationShortName }}</td>
                 <td>{{ o.parentName == null?"":o.parentName }}</td>
-                <%--<td><f:formatDate value="{{ o.createTime }}"  pattern="yyyy-MM-dd HH:mm:ss"></f:formatDate></td>--%>
                 <td>
                     {{# var date = timestampToTime(o.createTime) }}
                     {{ date }}
                 </td>
                 <td>{{o.createBy }}</td>
             </tr>
-        {{# } }}
+        {{# }); }}
     </script>
 
 <%@include file="../public/footer.jsp"%>
@@ -221,13 +219,6 @@
         },
         error:function(data){
             alert("数量获取失败");
-        }
-    });
-
-    $( "#show-option" ).tooltip({
-        show: {
-            effect: "slideDown",
-            delay: 250
         }
     });
 </script>

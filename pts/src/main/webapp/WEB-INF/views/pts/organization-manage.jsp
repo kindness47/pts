@@ -36,9 +36,9 @@
         <table class="table table-border table-bordered table-hover table-bg table-sort mt-20">
             <thead>
                 <tr class="text-c">
-                    <th id="organizationmanage-info-operation">操作</th>
-                    <th id="organizationmanage-info-organizationname">组织机构名</th>
-                    <th id="organizationmanage-info-organizationshortname">组织机构简称</th>
+                    <th>操作</th>
+                    <th>组织机构名</th>
+                    <th>组织机构简称</th>
                     <th>父级组织机构名</th>
                     <th>机构等级</th>
                     <th>创建时间</th>
@@ -79,8 +79,7 @@
                 </td>
                 <td>{{o.createBy }}</td>
                 <td>
-                    {{# var date = timestampToTime(o.updateTime) }}
-                    {{ date }}
+                    {{ date = timestampToTime(o.updateTime) }}
                 </td>
                 <td>{{o.updateBy == null ? "" : o.updateBy }}</td>
                 <td>
@@ -217,8 +216,8 @@
         var params = parentId == null ?null:{"parentId":parentId};
         $.post("${ptsStatic}/organizations-count",params,function (data) {
             if(data.success){
-                var params = parentId == null ?null:{"parentId":parentId};
-                renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations");
+                var params = parentId == null ? null:{"parentId":parentId};
+                renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null);
                 //sort_organization_nav(parentId.toString(),level.toString(),organizationName.toString());
             }else
                 layer.msg("当前机构下没有子机构",{icon:2,time:1500});

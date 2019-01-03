@@ -17,4 +17,10 @@ public class NavController {
     public String organizationManage(){
         return "pts/organization-manage";
     }
+
+    //项目信息
+    @RequestMapping(value = "/project-list")
+    public String projectList(){
+        return "pts/project-list";
+    }
 }

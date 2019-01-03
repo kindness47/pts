@@ -2,11 +2,12 @@
  * Description： 分页封装
  * Params:viewID:需要渲染的视图ID;demoID:模板ID;layPageID:分页插件ID;
  * params:数据[page,limit必需,如果为undefined将会初始化为page:1,limit:10   其它VO对象参数任选~~~];
- * getItemsURL:获取展示项url;
+ * getItemsURL:获取展示项url;pageparams:分页等配置信息{color，等，非必需>}
  * Author: 刘永红
  * Date: Created in 2018/12/11 17:21
  */
-function renderPageData(viewID,demoID,layPageID,params,count,getItemsURL){
+
+function renderPageData(viewID,demoID,layPageID,params,count,getItemsURL,pageparams){
     //初始化page limit
     if(params == null)
         var params = {"page":1,"limit":10};
@@ -14,6 +15,12 @@ function renderPageData(viewID,demoID,layPageID,params,count,getItemsURL){
         params.page = 1;
     if(params.limit == undefined)
         params.limit = 10;
+    //初始化pagecolor
+    var pagecolor = '';
+    if(pageparams == null)
+        pagecolor = '#1E9FFF';
+    else
+    pagecolor = pageparams.color == undefined ? '#1E9FFF':pageparams.color;
 
     //var data= isvalid == null ?{'page':page,'limit':limit}:{'page':page,'limit':limit,'status':isvalid};
     //获取第page页列表
@@ -35,12 +42,13 @@ function renderPageData(viewID,demoID,layPageID,params,count,getItemsURL){
                     curr:params.page,
                     first: '首页',
                     last: '尾页',
+                    theme: pagecolor,
                     limit:params.limit,
                     jump: function(obj, first){//obj是一个object类型。包括了分页的所有配置信息。first一个Boolean类，检测页面是否初始加载。非常有用，可避免无限刷新。
                         params.page = obj.curr;
                         params.limit = obj.limit;
                         if(!first){
-                            renderPageData(viewID,demoID,layPageID,params,count,getItemsURL);
+                            renderPageData(viewID,demoID,layPageID,params,count,getItemsURL,pageparams);
                         }
                     }
                 });

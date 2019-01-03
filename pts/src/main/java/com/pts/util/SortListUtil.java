@@ -25,8 +25,8 @@ public class SortListUtil<T> implements Comparator<T> {
         this.propertyName = propertyName;
         this.isAsc = isAsc;
     }
-    /** 根据类中的字段对对象进行排序
-     * Description： TODO
+    /**
+     * Description： 根据类中的字段对对象进行排序
      * Author: 刘永红
      * Date: Created in 2018/12/28 10:25
      */
@@ -55,8 +55,8 @@ public class SortListUtil<T> implements Comparator<T> {
         return 0;
     }
 
-    /** 获取传入的propertyName所对应的方法
-     * Description： TODO
+    /**
+     * Description： 获取传入的propertyName所对应的方法
      * Author: 刘永红
      * Date: Created in 2018/12/28 10:25
      */

@@ -84,7 +84,7 @@
 				<dt><i class="Hui-iconfont">&#xe613;</i> 项目跟踪<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						<li><a data-href="picture-list.html" data-title="项目管理" href="javascript:void(0)">项目管理</a></li>
+						<li><a data-href="project-list" data-title="项目信息" href="javascript:void(0)">项目信息</a></li>
 						<li><a data-href="picture-list.html" data-title="订单管理" href="javascript:void(0)">订单管理</a></li>
 						<li><a data-href="picture-list.html" data-title="结算管理" href="javascript:void(0)">结算管理</a></li>
 						<li><a data-href="picture-list.html" data-title="支付管理" href="javascript:void(0)">支付管理</a></li>

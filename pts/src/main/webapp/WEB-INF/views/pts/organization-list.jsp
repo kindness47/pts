@@ -80,8 +80,7 @@
                 <td>{{ o.organizationShortName }}</td>
                 <td>{{ o.parentName == null?"":o.parentName }}</td>
                 <td>
-                    {{# var date = timestampToTime(o.createTime) }}
-                    {{ date }}
+                    {{ timestampToTime(o.createTime) }}
                 </td>
                 <td>{{o.createBy }}</td>
             </tr>
@@ -215,7 +214,7 @@
         dataType:"json",
         success:function (data) {
             var params={"status":1};
-            renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations");
+            renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null);
         },
         error:function(data){
             alert("数量获取失败");

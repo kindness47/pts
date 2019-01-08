@@ -240,7 +240,8 @@
         });
     }
     
-    var navListChange = function (params) {
+    var navListChange = function (id,level,name) {
+        var params = {"id":id,"level":level,"name":name};
         switch (params.level) {
             case '0'://初始化
                 organizationNavList = [];
@@ -300,11 +301,9 @@
             if(data.success){
                 renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null);
                 if(parentId != null) {
-                    navParams.id = parentId.toString();
-                    navParams.level = level.toString();
-                    navParams.name = organizationName.toString();
-                }
-                navListChange(navParams);
+                    navListChange(parentId.toString(),level.toString(),organizationName.toString());
+                }else
+                    navListChange(navParams.id.toString(),navParams.level.toString(),navParams.name.toString());
                 //sort_organization_nav(parentId.toString(),level.toString(),organizationName.toString());
             }else
                 layer.msg("当前机构下没有子机构",{icon:2,time:1500});

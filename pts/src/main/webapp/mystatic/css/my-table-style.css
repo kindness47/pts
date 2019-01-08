@@ -1,0 +1,17 @@
+/** 表格字段太长隐藏处理 **/
+.long-text-hidden {
+    overflow: hidden;
+    word-break: break-all;
+    word-wrap:break-word;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+table td span:hover{
+    white-space:normal;
+    overflow:auto;
+}
+.block{
+    display: block
+}
+

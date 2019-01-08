@@ -9,6 +9,8 @@
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/h-ui/css/H-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/jquery-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-table-style.css" />
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-defined.css" />
     <style type="text/css">
         .ui-tooltip{padding: 1px 8px;}
         .ui-widget{font-size: 0.7em;}
@@ -22,7 +24,7 @@
 
     <div id="sort-nav" class="ml-10"></div>
 
-    <table class="table table-border table-bordered table-hover table-bg table-sort mt-10">
+    <table class="table table-border table-bordered table-hover table-bg mt-10">
         <%--<colgroup>
             <col width="110">
             <col width="100">
@@ -34,10 +36,10 @@
         </colgroup>--%>
         <thead>
             <tr class="text-c">
-                <th>组织机构名</th>
+                <th >组织机构名</th>
                 <th>组织机构简称</th>
                 <th>父级机构</th>
-                <th>组织机构层级</th>
+                <th>层级</th>
                 <th>sort</th>
                 <th>状态</th>
                 <th>操作</th>
@@ -53,23 +55,25 @@
 <script type="text/html" id="organization-sort-table-demo">
     {{# layui.each(d,function(index,o){ }}
         <tr class="text-c">
-            <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></td>
-            <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationShortName }}</a></td>
-            <td>{{ o.parentName == null ? "":o.parentName }}</td>
-            <td>{{ o.level }}</td>
-            <td>{{ o.sort }}</td>
-            <td>
+            <td><span class="long-text-hidden w-200"><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></span></td>
+            <td><span class="long-text-hidden w-200"><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationShortName }}</a></span></td>
+            <td><span class="long-text-hidden w-200">{{ o.parentName == null ? "":o.parentName }}</span></td>
+            <td><span class="w-min-40 block">{{ o.level }}</span></td>
+            <td><span class="w-min-40 block">{{ o.sort }}</span></td>
+            <td><span class="w-min-40 block">
                 {{# if(o.status == 1){  }}
                     <a href="javascript:;" style="color: green">√</a>
                 {{# }else{  }}
                     <a href="javascipt:;" title="{{ o.exceptionDesc }}" style="color: red">×</a>
                 {{# } }}
+                </span>
             </td>
-            <td>
-                <a title="上移一位" id="ss" href="javascript:;" onclick="change_organization_sort_toup('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe679;</i></a>
-                <a title="下移一位" href="javascript:;" onclick="change_organization_sort_todown('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe674;</i></a>
-                <a title="移到最前" href="javascript:;" onclick="change_organization_sort_tofirstup('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe699;</i></a>
-                <a title="移到最后" href="javascript:;" onclick="change_organization_sort_tolastdown('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe698;</i></a>
+            <td><span class="w-min-70  w-max-150 block">
+                    <a title="上移一位" id="ss" href="javascript:;" onclick="change_organization_sort_toup('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe679;</i></a>
+                    <a title="下移一位" href="javascript:;" onclick="change_organization_sort_todown('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe674;</i></a>
+                    <a title="移到最前" href="javascript:;" onclick="change_organization_sort_tofirstup('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe699;</i></a>
+                    <a title="移到最后" href="javascript:;" onclick="change_organization_sort_tolastdown('{{ o.id }}','{{ o.level }}','{{ o.parentId }}','{{ o.sort }}')"><i class="Hui-iconfont">&#xe698;</i></a>
+                </span>
             </td>
         </tr>
     {{# }); }}

@@ -11,9 +11,12 @@
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/jquery-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-table-style.css">
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-defined.css">
     <style type="text/css">
+        body{overflow: auto;}
         .Hui-aside{position: absolute;top:0px;bottom:0;left:0;padding-top:30px;padding-left:15px;width:199px;z-index:99;overflow:auto; background-color:rgba(238,238,238,0.5);border-right: 1px solid #e5e5e5;border-radius: 1%;}
-        .Hui-article-box{position: absolute;top:0px;right:0;bottom: 0;left:205px; overflow:hidden; z-index:1; background-color:#fff;padding: 0px 20px;}
+        .Hui-article-box{position: absolute;top:0px;right:0;bottom: 0;left:215px;overflow: auto; z-index:1; background-color:#fff;padding: 0px 20px;}
     </style>
 </head>
 <body>
@@ -29,18 +32,31 @@
             <a href="javascript:;" class="btn btn-secondary radius" onclick="organization_sort()">
                 <i class="Hui-iconfont">&#xe600;</i>排序
             </a>
-
         </div>
 
+        <div id="sort-nav" class="ml-10"></div>
+
         <!-- 表格 -->
-        <table class="table table-border table-bordered table-hover table-bg table-sort mt-20">
+        <table class="table table-border table-bordered table-hover table-bg mt-20" style="width: 900px">
+            <%--<colgroup>
+                <col width="110">
+                <col width="100">
+                <col width="110">
+                <col width="70">
+                <col width="50">
+                <col width="50">
+                <col width="80">
+                <col width="80">
+                <col width="80">
+                <col width="80">
+            </colgroup>--%>
             <thead>
                 <tr class="text-c">
                     <th>操作</th>
                     <th>组织机构名</th>
                     <th>组织机构简称</th>
-                    <th>父级组织机构名</th>
-                    <th>机构等级</th>
+                    <th>父组织机构名</th>
+                    <th>等级</th>
                     <th>创建时间</th>
                     <th>创建人</th>
                     <th>更新时间</th>
@@ -60,34 +76,39 @@
         {{# for(var i = 0,len = d.length;i < len; i++){   }}
         {{#      var o = d[i]; }}
             <tr class="text-c">
-                <td>
-                    <a title="修改" href="javascript:;" onclick="organization_add('{{ o.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
-                    {{# if(o.status == 1){ }}
-                    <a title="停用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',0)"><i class="Hui-iconfont">&#xe631;</i></a>
-                    {{# }else{ }}
-                    <a title="启用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',1)"><i class="Hui-iconfont">&#xe6e6;</i></a>
-                    {{# } }}
-                    <a title="删除" href="javascript:;" onclick="organization_delete('{{ o.id }}')"><i class="Hui-iconfont">&#xe609;</i></a>
+                <td><span class="block w-55">
+                        <a title="修改" href="javascript:;" onclick="organization_add('{{ o.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        {{# if(o.status == 1){ }}
+                        <a title="停用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',0)"><i class="Hui-iconfont">&#xe631;</i></a>
+                        {{# }else{ }}
+                        <a title="启用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',1)"><i class="Hui-iconfont">&#xe6e6;</i></a>
+                        {{# } }}
+                        <a title="删除" href="javascript:;" onclick="organization_delete('{{ o.id }}')"><i class="Hui-iconfont">&#xe609;</i></a>
+                    </span>
                 </td>
-                <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></td>
-                <td><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationShortName }}</a></td>
-                <td>{{ o.parentName == null?"":o.parentName }}</td>
-                <td>{{ o.level }}</td>
-                <td>
+                <td><span class="long-text-hidden w-80"><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></span></td>
+                <td><span class="long-text-hidden w-80"><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationShortName }}</a></span></td>
+                <td><span class="long-text-hidden w-80">{{ o.parentName == null?"":o.parentName }}</span></td>
+                <td><span class="block w-30">{{ o.level }}</span></td>
+                <td><span class="block w-120">
                     {{# var date = timestampToTime(o.createTime) }}
                     {{ date }}
+                    </span>
                 </td>
-                <td>{{o.createBy }}</td>
-                <td>
+                <td><span class="long-text-hidden w-70">{{o.createBy }}</span></td>
+                <td><span class="long-text-hidden w-120">
                     {{ date = timestampToTime(o.updateTime) }}
+                </span>
                 </td>
-                <td>{{o.updateBy == null ? "" : o.updateBy }}</td>
+                <td><span class="long-text-hidden w-70">{{o.updateBy == null ? "" : o.updateBy }}</span></td>
                 <td>
+                    <span class="w-30 block"></span>
                     {{# if(o.status === 1){     }}
                         √
                     {{# }else{ }}
                         <a href="javascript:;" id="show-option" class="c-red"  title='{{ o.exceptionDesc }}'>×</a>
                     {{# } }}
+                </td>
                 </td>
             </tr>
         {{# } }}
@@ -108,6 +129,9 @@
 <script type="text/javascript">
 
     var size = 10;
+    var organizationNavList = new Array(),
+        navParams = {"id":"0","level":"0",name:"首页"},
+        newOrganizationNavList = new Array();
 
     var layer;
     layui.use('layer',function () {
@@ -199,6 +223,59 @@
         }
         //zTree.selectNode(zTree.getNodeByParam("id",'11'));
     });
+    var show_nav = function (list) {
+        var htmlStr = "<span class=\"layui-breadcrumb\" lay-separator=\"-->\">";
+        for(var i = 0 ; i < list.length ; i ++){
+            var info = list[i];
+            if(info.level == '0')
+                htmlStr += "<a href='javascript:;' onclick=get_count_and_render_paged_data('','0','"+info.name+"')>"+info.name+"</a>";
+            else
+                htmlStr += "<a href='javascript:;' onclick=get_count_and_render_paged_data('"+info.id+"','"+info.level+"','"+info.name+"')>"+info.name+"</a>";
+        }
+        htmlStr += "</span>";
+        $("#sort-nav").html(htmlStr);
+        layui.use('element',function () {
+            var element = layui.element;
+            element.render('breadcrumb');
+        });
+    }
+    
+    var navListChange = function (params) {
+        switch (params.level) {
+            case '0'://初始化
+                organizationNavList = [];
+                organizationNavList.push({"id":"0","level":"0",name:"首页"});
+                show_nav(organizationNavList);
+                break;
+            case '1'://点击一级菜单  organizationNavList初始化时已有 “首页” 信息
+                newOrganizationNavList = [];
+                newOrganizationNavList.push({"id":"0","level":"0",name:"首页"});
+                newOrganizationNavList.push(params);
+                organizationNavList = [];
+                organizationNavList.push({"id":"0","level":"0",name:"首页"});
+                organizationNavList.push(params);
+                show_nav(newOrganizationNavList);
+                break;
+            case '2'://点击2级菜单 // 判断是否存在1级菜单
+                newOrganizationNavList = [];
+                if(organizationNavList.length > 1){//存在1级菜单
+                    newOrganizationNavList.push(organizationNavList[0]);
+                    newOrganizationNavList.push(organizationNavList[1]);
+                    newOrganizationNavList.push(params);
+                    organizationNavList.push(params);
+                    show_nav(newOrganizationNavList);
+                }else{//不存在1级菜单
+                    newOrganizationNavList = [];
+                    newOrganizationNavList.push({"id":"0","level":"0",name:"首页"});
+                    newOrganizationNavList.push(params);
+                    organizationNavList = [];
+                    organizationNavList.push({"id":"0","level":"0",name:"首页"});
+                    organizationNavList.push(params);
+                    show_nav(newOrganizationNavList);
+                }
+                break;
+        }        
+    }
 
     var organization_add = function(id){
         layer.open({
@@ -212,17 +289,26 @@
         });
     }
     var get_count_and_render_paged_data = function(parentId,level,organizationName){
-        //alert(parentId == null);
-        var params = parentId == null ?null:{"parentId":parentId};
+
+        var params;
+        if(parentId == null || parentId ==""){
+            params = null;
+        }else{
+            params = {"parentId":parentId};
+        }
         $.post("${ptsStatic}/organizations-count",params,function (data) {
             if(data.success){
-                var params = parentId == null ? null:{"parentId":parentId};
                 renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null);
+                if(parentId != null) {
+                    navParams.id = parentId.toString();
+                    navParams.level = level.toString();
+                    navParams.name = organizationName.toString();
+                }
+                navListChange(navParams);
                 //sort_organization_nav(parentId.toString(),level.toString(),organizationName.toString());
             }else
                 layer.msg("当前机构下没有子机构",{icon:2,time:1500});
         });
-        current_page_id = parentId;
     }
     get_count_and_render_paged_data(null,null,"首页");
 

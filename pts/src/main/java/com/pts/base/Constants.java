@@ -12,4 +12,7 @@ public class Constants {
 
     //每页显示数量
     public static final Integer SIZE = 10;
+
+    //
+    public static final String SUPER_ADMIN = "超级管理员";
 }

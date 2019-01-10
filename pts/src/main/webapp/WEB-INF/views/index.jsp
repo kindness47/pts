@@ -71,62 +71,28 @@
 </header>
 <aside class="Hui-aside">
 	<div class="menu_dropdown bk_2">
-		<dl id="menu-organization">
-			<dt><i class="Hui-iconfont">&#xe616;</i>机构信息<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-			<dd>
-				<ul>
-					<li><a data-href="organization-list" data-title="机构预览" href="javascript:void(0)">机构预览</a></li>
-					<li><a data-href="organization-manage" data-title="机构管理" href="javascript:void(0)">机构管理</a></li>
-				</ul>
-			</dd>
-		</dl>
-			<dl id="menu-trace">
-				<dt><i class="Hui-iconfont">&#xe613;</i> 项目跟踪<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-				<dd>
-					<ul>
-						<li><a data-href="project-list" data-title="项目信息" href="javascript:void(0)">项目信息</a></li>
-						<li><a data-href="picture-list.html" data-title="订单管理" href="javascript:void(0)">订单管理</a></li>
-						<li><a data-href="picture-list.html" data-title="结算管理" href="javascript:void(0)">结算管理</a></li>
-						<li><a data-href="picture-list.html" data-title="支付管理" href="javascript:void(0)">支付管理</a></li>
-						<li><a data-href="picture-list.html" data-title="项目追踪" href="javascript:void(0)">项目追踪</a></li>
-						<li><a data-href="picture-list.html" data-title="归档项目" href="javascript:void(0)">归档项目</a></li>
-						<li><a data-href="picture-list.html" data-title="异常项目" href="javascript:void(0)">异常项目</a></li>
-				</ul>
-			</dd>
-		</dl>
-		<dl id="menu-admin">
-			<dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-			<dd>
-				<ul>
-					<li><a data-href="admin-role.html" data-title="角色管理" href="javascript:void(0)">角色管理</a></li>
-					<li><a data-href="admin-permission.html" data-title="权限管理" href="javascript:void(0)">权限管理</a></li>
-					<li><a data-href="admin-list.html" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
-			</ul>
-		</dd>
-		</dl>
-		<dl id="menu-tongji">
-			<dt><i class="Hui-iconfont">&#xe61a;</i> 系统统计<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-			<dd>
-				<ul>
-					<li><a data-href="charts-1.html" data-title="折线图" href="javascript:void(0)">折线图</a></li>
-					<li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
-					<li><a data-href="charts-3.html" data-title="区域图" href="javascript:void(0)">区域图</a></li>
-					<li><a data-href="charts-4.html" data-title="柱状图" href="javascript:void(0)">柱状图</a></li>
-					<li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
-					<li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
-					<li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
-			</ul>
-			</dd>
-		</dl>
-		<dl id="menu-system">
-			<dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-			<dd>
-				<ul>
-					<li><a data-href="system-base.html" data-title="菜单管理" href="javascript:void(0)">菜单管理</a></li>
-					<li><a data-href="system-log.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
-			</ul>
-		</dd>
-		</dl>
+        <c:forEach items="${menus}" var="menu">
+            <c:if test="${menu.level =='1'}">
+                <dl>
+                    <dt>
+                        <i class="Hui-iconfont">${menu.menuClass}</i>${menu.menuName}
+                        <i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i>
+                        <c:set var="code" value="${menu.menuCode}"></c:set>
+                        <dd>
+                            <ul>
+                                <c:forEach items="${menus}" var="menu1">
+                                    <c:if test="${menu1.level =='2'}">
+                                        <c:if test="${menu1.parentCode == code}">
+                                            <li><a data-href="${menu1.url}" data-title="${menu1.title}" href="javascript:void(0)">${menu1.menuName}</a></li>
+                                        </c:if>
+                                    </c:if>
+                                </c:forEach>
+                            </ul>
+                        </dd>
+                    </dt>
+                </dl>
+            </c:if>
+        </c:forEach>
 	</div>
 </aside>
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

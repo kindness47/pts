@@ -21,5 +21,8 @@ public interface OrganizationService {
     int getOrganizationsCount(OrganizationVO organizationVO);
 
     Organization getOrganizationBySole(Organization organization);
+
     int getMaxSort(Map map);
+
+    void organizationSortChange(String id,Integer sort,Integer level,String parentId,String op);
 }

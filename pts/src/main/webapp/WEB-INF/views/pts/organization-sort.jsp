@@ -153,7 +153,7 @@
             if(data.success){
                 var count = data.result;
                 var params={"parentId":parentId};
-                renderPageData("organization-sort-table-tbody","organization-sort-table-demo","sort-page",params,count,"${ptsStatic}/organizations");
+                renderPageData("organization-sort-table-tbody","organization-sort-table-demo","sort-page",params,count,"${ptsStatic}/organizations",null,null);
                 sort_organization_nav(parentId.toString(),level.toString(),organizationName.toString());
             }else
                 layer.msg("当前机构下没有子机构",{icon:2,time:1500});
@@ -207,7 +207,7 @@
     });
     $("body").on("click",$("div[role='tooltip']"),function () {
        $("div[role='tooltip']").remove();
-    })
+    });
 </script>
 </body>
 </html>

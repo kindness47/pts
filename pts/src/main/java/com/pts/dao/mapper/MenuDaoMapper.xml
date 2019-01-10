@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pts.dao.MenuDao">
+    <resultMap id="BaseMap" type="com.pts.model.Menu">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="menu_code" property="menuCode" jdbcType="VARCHAR"></result>
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR"></result>
+        <result column="parent_code" property="parentCode" jdbcType="VARCHAR"></result>
+        <result column="url" property="url" jdbcType="VARCHAR"></result>
+        <result column="level" property="level" jdbcType="INTEGER"></result>
+        <result column="menu_class" property="menuClass" jdbcType="VARCHAR"></result>
+        <result column="function_type" property="functionType" jdbcType="INTEGER"></result>
+        <result column="sort" property="sort" jdbcType="INTEGER"></result>
+        <result column="title" property="title" jdbcType="VARCHAR"></result>
+        <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="exception_desc" property="exceptionDesc" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"></result>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"></result>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"></result>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <sql id="BaseFiled">
+        `id`,`menu_code`,`menu_name`,`parent_code`,`url`,`level`,`menu_class`,`function_type`,`sort`,`title`,`status`,`exception_desc`,`create_time`,`create_by`,`update_time`,`update_by`
+    </sql>
+
+    <select id="selectById" resultMap="BaseMap" parameterType="java.lang.String">
+        select <include refid="BaseFiled"/>
+        from `p_menu` where `id`=#{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getMenusByUserId" resultMap="BaseMap" parameterType="java.lang.String">
+        SELECT m.* FROM `p_menu` m
+          LEFT JOIN `p_permissions` p ON p.`permission` = m.`menu_code`
+          WHERE p.`user_id` = #{userId,jdbcType=VARCHAR}
+          ORDER BY `menu_code` ASC;
+    </select>
+
+    <select id="getAll" resultMap="BaseMap">
+        select <include refid="BaseFiled"/>
+        from `p_menu` ORDER BY `menu_code` ASC
+    </select>
+
+    <insert id="insert" parameterType="com.pts.model.Menu">
+        insert into `p_menu`
+         <trim prefix="(" suffix=")" suffixOverrides=",">
+             <if test="id != null">
+                 `id`,
+             </if>
+             <if test="menuCode != null">
+                 `menu_code`,
+             </if>
+             <if test="menuName != null">
+                 `menu_name`,
+             </if>
+             <if test="parentCode != null">
+                 `parent_code`,
+             </if>
+             <if test="url != null">
+                 `url`,
+             </if>
+             <if test="level != null">
+                 `level`,
+             </if>
+             <if test="menuClass != null">
+                 `menu_class`,
+             </if>
+             <if test="functionType != null">
+                 `function_type`,
+             </if>
+             <if test="sort != null">
+                 `sort`,
+             </if>
+             <if test="title != null">
+                 `title`,
+             </if>
+             <if test="status != null">
+                 `status`,
+             </if>
+             <if test="createTime != null">
+                 `create_time`,
+             </if>
+             <if test="createBy != null">
+                 `create_by`,
+             </if>
+         </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="menuCode != null">
+                #{menuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode != null">
+                #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                #{level,jdbcType=INTEGER},
+            </if>
+            <if test="menuClass != null">
+                #{menuClass,jdbcType=VARCHAR},
+            </if>
+            <if test="functionType != null">
+                #{functionType,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from `p_menu` where `id`=#{id,jdbcType=VARCHAR}
+    </delete>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.pts.model.Menu">
+        update `p_menu`
+        <set>
+            <if test="menuCode != null">
+                `menu_code` = #{menuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                `menu_name` = #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode != null">
+                `parent_code` = #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                `url` = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                `level` = #{level,jdbcType=INTEGER},
+            </if>
+            <if test="menuClass != null">
+                `menu_class` = #{menuClass,jdbcType=VARCHAR},
+            </if>
+            <if test="functionType != null">
+                `function_type` = #{functionType,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                `sort` = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                `title` = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="exceptionDesc != null">
+                `exception_desc` = #{exceptionDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                `update_by` = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id=#{id,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

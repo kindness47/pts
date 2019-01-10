@@ -34,10 +34,10 @@
             </a>
         </div>
 
-        <div id="sort-nav" class="ml-10"></div>
+        <div id="sort-nav" class="ml-10 mt-10"></div>
 
         <!-- 表格 -->
-        <table class="table table-border table-bordered table-hover table-bg mt-20" style="width: 900px">
+        <table class="table table-border table-bordered table-hover table-bg mt-5" style="width: 900px">
             <%--<colgroup>
                 <col width="110">
                 <col width="100">
@@ -299,8 +299,8 @@
         }
         $.post("${ptsStatic}/organizations-count",params,function (data) {
             if(data.success){
-                renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null);
-                if(parentId != null) {
+                renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null,null);
+                if(parentId != null && parentId != "") {
                     navListChange(parentId.toString(),level.toString(),organizationName.toString());
                 }else
                     navListChange(navParams.id.toString(),navParams.level.toString(),navParams.name.toString());
@@ -344,7 +344,7 @@
                         layer.msg(data.message,{icon:2,time:1500});
                 });
             }
-         });
+        });
     }
 
     var organization_delete = function(id){

@@ -91,8 +91,9 @@
         </trim>
     </select>
 
+
     <!-- 查询用户 -->
-    <select id="getUser" resultMap="BaseMap" parameterType="com.pts.model.User">
+    <select id="getUser" resultMap="BaseMap" parameterType="com.pts.vo.UserVO">
         select
         <include refid="BaseFiled"/>
         from `p_user`
@@ -103,8 +104,8 @@
             <if test="account != null">
                 `account` = #{account,jdbcType=VARCHAR} AND
             </if>
-            <if test="userName != null">
-                `username` = #{userName,jdbcType=VARCHAR} AND
+            <if test="userName != null and userName != ''">
+                `username` LIKE concat(concat('%',#{userName,jdbcType=VARCHAR}),'%') AND
             </if>
             <if test="passWord != null">
                 `password` = #{passWord,jdbcType=VARCHAR} AND
@@ -118,6 +119,74 @@
             <if test="exceptionDesc != null">
                 `exception_desc` = #{exceptionDesc,jdbcType=VARCHAR} AND
             </if>
+            <if test="createBy != null">
+                `create_by` = #{createBy,jdbcType=VARCHAR} AND
+            </if>
+            <if test="updateBy != null">
+                `update_by` = #{updateBy,jdbcType=VARCHAR} AND
+            </if>
+            <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                `create_time` BETWEEN #{startDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}
+            </if>
         </trim>
+        ORDER BY `id`
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
     </select>
+
+    <select id="getUserCount" resultType="java.lang.Integer" parameterType="com.pts.vo.UserVO">
+        select count(*) from(
+          select * from `p_user`
+          <trim prefix=" where " suffixOverrides="AND|OR">
+              <if test="userName != null and userName != ''">
+                  `username` LIKE concat(concat('%',#{userName,jdbcType=VARCHAR}),'%') AND
+              </if>
+              <if test="status != null">
+                  `status` = #{status,jdbcType=INTEGER} AND
+              </if>
+              <if test="exceptionDesc != null">
+                  `exception_desc` = #{exceptionDesc,jdbcType=VARCHAR} AND
+              </if>
+              <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                  `create_time` BETWEEN #{startDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}
+              </if>
+          </trim>
+        )a
+    </select>
+
+    <update id="updateUserByPrimaryKeySelective" parameterType="com.pts.model.User">
+        update `p_user`
+        <set>
+            <if test="account != null">
+                `account` = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                `username` = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passWord != null">
+                `password` = #{passWord,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                `role_name` = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="exceptionDesc != null">
+                `exception_desc` = #{exceptionDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                `update_by` = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where `id` = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from `p_user` where `id`=#{id,jdbcType=VARCHAR}
+    </delete>
 </mapper>

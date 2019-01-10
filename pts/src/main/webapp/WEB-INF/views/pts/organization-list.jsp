@@ -214,7 +214,7 @@
         dataType:"json",
         success:function (data) {
             var params={"status":1};
-            renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null);
+            renderPageData("tbody-view","demo","table-page",params,data.result,"${ptsStatic}/organizations",null,null);
         },
         error:function(data){
             alert("数量获取失败");

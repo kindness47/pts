@@ -30,10 +30,9 @@
     </select>
 
     <select id="getMenusByUserId" resultMap="BaseMap" parameterType="java.lang.String">
-        SELECT m.* FROM `p_menu` m
-          LEFT JOIN `p_permissions` p ON p.`permission` = m.`menu_code`
-          WHERE p.`user_id` = #{userId,jdbcType=VARCHAR}
-          ORDER BY `menu_code` ASC;
+       SELECT m.* FROM `p_menu` m WHERE m.`menu_code` IN (
+	      SELECT p.`permission` FROM `p_permissions` p WHERE p.`status` = 1 AND p.`user_id`=#{userId,jdbcType=VARCHAR}
+        )
     </select>
 
     <select id="getAll" resultMap="BaseMap">

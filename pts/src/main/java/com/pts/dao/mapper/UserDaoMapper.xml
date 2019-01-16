@@ -48,7 +48,7 @@
                 `create_time`,
             </if>
         </trim>
-        <trim prefix=" values(" suffix=")">
+        <trim prefix=" values(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != ''">
                 #{id,jdbcType=VARCHAR},
             </if>

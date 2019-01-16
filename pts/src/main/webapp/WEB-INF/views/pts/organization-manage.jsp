@@ -29,9 +29,11 @@
         <div><a class="btn btn-default radius r" style="line-height:0.8em;margin-top:1px;margin-right:1px;padding-left: 3px;padding-right: 3px;height: 22px;" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></div>
 
         <div class="c1 bg-1 pd-5 mt-30">
-            <a href="javascript:;" class="btn btn-secondary radius" onclick="organization_sort()">
-                <i class="Hui-iconfont">&#xe600;</i>排序
-            </a>
+            <shiro:hasPermission name="0102-01">
+                <a href="javascript:;" class="btn btn-secondary radius" onclick="organization_sort()">
+                    <i class="Hui-iconfont">&#xe600;</i>排序
+                </a>
+            </shiro:hasPermission>
         </div>
 
         <div id="sort-nav" class="ml-10 mt-10"></div>
@@ -76,14 +78,21 @@
         {{# for(var i = 0,len = d.length;i < len; i++){   }}
         {{#      var o = d[i]; }}
             <tr class="text-c">
-                <td><span class="block w-55">
-                        <a title="修改" href="javascript:;" onclick="organization_add('{{ o.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
-                        {{# if(o.status == 1){ }}
-                        <a title="停用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',0)"><i class="Hui-iconfont">&#xe631;</i></a>
-                        {{# }else{ }}
-                        <a title="启用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',1)"><i class="Hui-iconfont">&#xe6e6;</i></a>
-                        {{# } }}
-                        <a title="删除" href="javascript:;" onclick="organization_delete('{{ o.id }}')"><i class="Hui-iconfont">&#xe609;</i></a>
+
+           <td><span class="block w-55">
+                        <shiro:hasPermission name="0102-02">
+                            <a title="修改" href="javascript:;" onclick="organization_add('{{ o.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="0102-03">
+                            {{# if(o.status == 1){ }}
+                            <a title="停用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',0)"><i class="Hui-iconfont">&#xe631;</i></a>
+                            {{# }else{ }}
+                            <a title="启用" href="javascript:;" onclick="organization_setStatus('{{ o.id }}',1)"><i class="Hui-iconfont">&#xe6e6;</i></a>
+                            {{# } }}
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="0102-04">
+                            <a title="删除" href="javascript:;" onclick="organization_delete('{{ o.id }}')"><i class="Hui-iconfont">&#xe609;</i></a>
+                        </shiro:hasPermission>
                     </span>
                 </td>
                 <td><span class="long-text-hidden w-80"><a href="javascript:;" onclick="get_count_and_render_paged_data('{{ o.id }}','{{ o.level }}','{{ o.organizationName }}')">{{ o.organizationName }}</a></span></td>

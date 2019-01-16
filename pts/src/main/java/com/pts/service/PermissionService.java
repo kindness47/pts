@@ -1,6 +1,7 @@
 package com.pts.service;
 
 import com.pts.model.Permission;
+import com.pts.model.User;
 
 import java.util.List;
 
@@ -13,4 +14,8 @@ public interface PermissionService {
     int update(Permission permission);
     //删除权限
     int deletePermissionBySole(Permission permission);
+
+    void saveUserPermission(String dataStr, User user, String opUserId);
+
+    void deletePermissionBuUserId(String userId);
 }

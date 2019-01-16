@@ -1,5 +1,6 @@
 package com.pts.base;
 
+import com.mysql.cj.util.StringUtils;
 import com.pts.model.Permission;
 import com.pts.model.User;
 import com.pts.service.PermissionService;
@@ -16,6 +17,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,10 +44,17 @@ public class MyRealm extends AuthorizingRealm {
         User u = new User();
         u.setAccount(account);
         User user = userService.getUserBySole(u);
+
         //通过用户id查询用户权限列表
-        Permission p = new Permission();
-        p.setUserId(user.getId());
-        List<Permission> permissionList = permissionService.getPermission(p);
+        List<Permission> permissionList = new ArrayList<>();
+        //管理获取所有权限
+        if(SystemUtil.getSessionUser().getRoleName().equals(Constants.SUPER_ADMIN))
+            permissionList = permissionService.getPermission(null);
+        else {
+            Permission p = new Permission();
+            p.setUserId(user.getId());
+            permissionList = permissionService.getPermission(p);
+        }
         //将用户权限集合添加到simpleAuthorizationInfo
         Set<String> permissionSet = new HashSet<String>();
         for(Permission permission : permissionList)

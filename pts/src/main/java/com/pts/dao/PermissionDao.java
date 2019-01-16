@@ -1,6 +1,7 @@
 package com.pts.dao;
 
 import com.pts.model.Permission;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface PermissionDao {
     int update(Permission permission);
     //删除权限
     int deletePermissionBySole(Permission permission);
+
+    int insertByBatch(@Param("permissionList") List<Permission> permissionList);
 
 }

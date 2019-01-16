@@ -1,5 +1,6 @@
 package com.pts.controller;
 
+import com.mysql.cj.util.StringUtils;
 import com.pts.base.Constants;
 import com.pts.model.Menu;
 import com.pts.model.User;
@@ -33,7 +34,7 @@ public class LoginController extends BaseController{
     public String login(User user, Model model){
         if(user == null)
             return "login";
-        if(user.getAccount() == null || user.getPassWord() == null)
+        if(StringUtils.isNullOrEmpty(user.getAccount()) || StringUtils.isNullOrEmpty(user.getPassWord()))
             return "login";
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getAccount(),user.getPassWord(),null);

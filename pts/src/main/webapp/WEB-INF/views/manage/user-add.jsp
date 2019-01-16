@@ -12,7 +12,7 @@
     <fieldset class="layui-elem-field layui-field-title">
         <legend>新增用户</legend>
     </fieldset>
-    <form class="layui-form" action="/user-save" method="post">
+    <form class="layui-form" id="user-info">
         <div class="layui-form-item">
             <label class="layui-form-label col-xs-4 col-md-2">用户名</label>
             <div class="layui-input-block">
@@ -44,14 +44,14 @@
             <label class="layui-form-label col-xs-4 col-md-2">角色</label>
             <div class="layui-input-block">
                 <select name="roleName">
-                    <option value="管理员" <c:if test="${currentUser.roleName == '管理员'}">selected</c:if> >管理员</option>
+                    <option value="超级管理员" <c:if test="${currentUser.roleName == '超级管理员'}">selected</c:if> >超级管理员</option>
                     <option value="普通用户" <c:if test="${currentUser.roleName == '普通用户'}">selected</c:if> >普通用户</option>
                 </select>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button lay-submit class="layui-btn" >立即提交</button>
+                <button type="button" class="layui-btn" onclick="save_user()" >立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary" onclick="layer_close()">关闭</button>
             </div>
         </div>
@@ -67,7 +67,17 @@
         var form = layui.form,
             layer = layui.layer;
     })
-
+    var save_user = function () {
+        $.post("${ptsStatic}/user-save",$("#user-info").serialize(),function (data) {
+            if(data.success)
+                layer.msg(data.message,{icon:1,time:1500},function () {
+                    layer_close();
+                    parent.location.reload();
+                });
+            else
+                layer.msg(data.message,{icon:2,time:1500});
+        });
+    }
 </script>
 </body>
 </html>

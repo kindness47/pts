@@ -68,6 +68,20 @@
             </if>
         </trim>
     </insert>
+    
+    <!-- 批量插入 -->
+    <insert id="insertByBatch" parameterType="java.util.ArrayList">
+        insert into `p_permissions`(
+        `id`,`user_id`,`permission`,`permission_type`,`status`,`exception_desc`,`create_by`,`update_by`
+        ) values
+          <foreach collection="permissionList" item="item" index="index" separator=",">
+              (#{item.id,jdbcType=VARCHAR},#{item.userId,jdbcType=VARCHAR},
+                #{item.permission,jdbcType=VARCHAR},#{item.permissionType,jdbcType=INTEGER},
+                #{item.status,jdbcType=INTEGER},#{item.exceptionDesc,jdbcType=VARCHAR},
+                #{item.createBy,jdbcType=VARCHAR},#{item.updateBy,jdbcType=VARCHAR})
+          </foreach>
+
+    </insert>
 
     <!-- 获取所有权限 -->
     <select id="getAllPermission" resultMap="BaseMap">
@@ -98,7 +112,7 @@
     </select>
 
     <delete id="deletePermissionBySole" parameterType="com.pts.model.Permission">
-        delete from `p_permission` where
+        delete from `p_permissions` where
         <trim suffixOverrides="AND|OR">
             <if test="id != null">
                 `id` = #{id,jdbcType=VARCHAR} AND

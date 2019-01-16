@@ -28,9 +28,11 @@
     </div>
 
     <div class="c1 bg-1 pd-5 mt-20">
-        <a href="javascript:;" class="btn btn-secondary radius" onclick="user_add()">
-            <i class="Hui-iconfont">&#xe600;</i>新增
-        </a>
+        <shiro:hasPermission name="0301-01">
+            <a href="javascript:;" class="btn btn-secondary radius" onclick="user_add()">
+                <i class="Hui-iconfont">&#xe600;</i>新增
+            </a>
+        </shiro:hasPermission>
     </div>
 
     <table class="table table-border table-bordered table-striped table-hover mt-20">
@@ -71,15 +73,25 @@
                 {{# } }}
             </td>
             <td><span class="w-min-100 block">
+                <shiro:hasPermission name="0301-02">
                 {{# if(user.status == 1){ }}
                     <a title="停用" href="javascript:;" onclick="user_setStatus('{{ user.id }}',0)"><i class="Hui-iconfont">&#xe631;</i></a>
                 {{# }else{ }}
                     <a title="启用" href="javascript:;" onclick="user_setStatus('{{ user.id }}',1)"><i class="Hui-iconfont">&#xe6e6;</i></a>
                 {{# } }}
+                </shiro:hasPermission>
+                <shiro:hasPermission name="0301-03">
                     <a title="修改" href="javascript:;" onclick="user_edit('{{ user.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="0301-04">
                     <a title="删除" href="javascript:;" onclick="user_delete('{{ user.id }}')"><i class="Hui-iconfont">&#xe609;</i></a>
+                </shiro:hasPermission>
+                <%--<shiro:hasPermission name="0301-05">--%>
                     <a title="权限管理" href="javascript:;" onclick="user_permission('{{ user.id }}')"><i class="Hui-iconfont">&#xe61d;</i></a>
+                <%--</shiro:hasPermission>--%>
+                <shiro:hasPermission name="0301-06">
                     <a title="重置密码" href="javascript:;" onclick="user_reset_password('{{ user.id }}','{{ user.userName }}')"><i class="Hui-iconfont">&#xe605;</i></a>
+                </shiro:hasPermission>
                 </span>
             </td>
         </tr>

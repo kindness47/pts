@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
                 else
                     permissionStr += menuList.get(i).getMenuCode()+",";
             }
+            System.out.println("----------------------------"+permissionStr);
             permissionService.saveUserPermission(permissionStr,user,user.getId());
         }
         return resultCount;

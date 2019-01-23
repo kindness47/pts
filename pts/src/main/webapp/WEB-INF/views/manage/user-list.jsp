@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/jquery-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-defined.css" />
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-table-style.css" />
     <style type="text/css">
         .ui-tooltip{padding: 1px 5px;}
         .ui-widget{font-size: 0.7em;}
@@ -23,7 +24,7 @@
         <input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}'})" id="datemin" class="input-text Wdate" style="width:120px;">
         -
         <input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d'})" id="datemax" class="input-text Wdate" style="width:120px;">
-        <input type="text" class="input-text" style="width:250px" placeholder="请输入用户名进行查找" id="searchName" name="userName">
+        <input type="text" class="input-text" style="width:250px" placeholder="请输入用户名进行查找" id="menuName" name="menuName">
         <button type="button" class="btn btn-success" id="submit-search" onclick="search_user()" name=""><i class="icon-search"></i> 搜用户</button>
     </div>
 
@@ -60,11 +61,11 @@
 <script type="text/html" id="user-list-tbody-demo">
     {{# layui.each(d,function(index,user){ }}
         <tr class="text-c">
-            <td>{{ user.userName }}</td>
-            <td>{{ user.account }}</td>
-            <td>{{ user.roleName }}</td>
-            <td>{{ timestampToTime(user.createTime) }}</td>
-            <td>{{ user.createBy }}</td>
+            <td class="w-min-40"><span class="long-text-hidden">{{ user.userName }}</span></td>
+            <td class="w-min-40"><span class="long-text-hidden">{{ user.account }}</span></td>
+            <td class="w-min-40"><span class="long-text-hidden">{{ user.roleName }}</span></td>
+            <td class="w-min-40"><span class="long-text-hidden">{{ timestampToTime(user.createTime) }}</span></td>
+            <td class="w-min-40"><span class="long-text-hidden">{{ user.createBy }}</span></td>
             <td>
                 {{# if(user.status == 1){ }}
                     <span class="label label-success radius">已启用</span>
@@ -190,10 +191,11 @@
     var search_user = function () {
         var mindate = $("#datemin").val(),
             maxdate = $("#datemax").val(),
-            username = $("#searchName").val();
-        $.post("list-user-by-selective",{"startDate":mindate,"endDate":maxdate,"userName":username},function(data){
+            username = $("#searchName").val(),
+            parmas = {"startDate":mindate,"endDate":maxdate,"userName":username,"page":1,"limit":10};
+        $.post("list-user-by-selective",parmas,function(data){
             if(data.success){//查询成功--->展示
-                renderPageData("user-list-tbody","user-list-tbody-demo","user-list-page",null,data.result.count,null,data.result.resultdata,{"color":"#FF5722"});
+                renderPageData("user-list-tbody","user-list-tbody-demo","user-list-page",parmas,data.result.count,null,data.result.resultdata,{"color":"#FF5722"});
             }else{
                 layer.msg("查询数据失败",{icon:2,time:1500});
             }

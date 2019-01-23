@@ -15,6 +15,12 @@
         body{overflow: auto;}
         .Hui-aside{position: absolute;top:0px;bottom:0;left:0;padding-top:30px;padding-left:15px;width:199px;z-index:99;overflow:auto; background-color:rgba(238,238,238,0.5);border-right: 1px solid #e5e5e5;border-radius: 1%;}
         .Hui-article-box{position: absolute;top:0px;right:0;bottom: 0;left:215px;overflow: auto; z-index:1; background-color:#fff;padding: 0px 20px;}
+        @media (max-width: 767px){
+            .Hui-article-box {
+                position: static;
+                left: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>

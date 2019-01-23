@@ -131,7 +131,7 @@
         </trim>
         ORDER BY `id`
         <if test="start != null and limit != null">
-            limit #{start},#{limit}
+            limit #{start,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
         </if>
     </select>
 

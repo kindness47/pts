@@ -1,6 +1,7 @@
 package com.pts.dao;
 
 import com.pts.model.Menu;
+import com.pts.vo.MenuVO;
 
 import java.util.List;
 
@@ -11,10 +12,17 @@ public interface MenuDao {
     List<Menu> getMenusByUserId(String userId);
     //获取所有menu
     List<Menu> getAll();
-    //插入menu
+    //根据条件获取menu
+    List<MenuVO> getMenuByVO(MenuVO menuVO);
+    //根据条件获取menu数量
+    int getMenusCount(MenuVO menuVO);
+    // 插入menu
     int insert(Menu menu);
     //删除menu
     int deleteById(String id);
     //更新menu
     int updateByPrimaryKeySelective(Menu menu);
+
+    int getMaxSort(Menu menu);
+    Menu select(Menu menu);
 }

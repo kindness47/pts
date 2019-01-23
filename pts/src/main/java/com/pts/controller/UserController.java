@@ -42,6 +42,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public Response listUserBySelective(UserVO userVO){
         Integer count = userService.getUserCount(userVO);
+        userVO.setStart((userVO.getPage()-1)*userVO.getLimit());
         List<User> users = userService.getUser(userVO);
         Map<String,Object> resultmap = new HashMap<>();
         resultmap.put("count",count);

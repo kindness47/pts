@@ -20,6 +20,10 @@
         <result column="update_by" property="updateBy" jdbcType="VARCHAR"></result>
     </resultMap>
 
+    <resultMap id="VOMap" type="com.pts.vo.MenuVO" extends="BaseMap">
+        <result column="parent_name" property="parentName" jdbcType="VARCHAR"></result>
+    </resultMap>
+
     <sql id="BaseFiled">
         `id`,`menu_code`,`menu_name`,`parent_code`,`url`,`level`,`menu_class`,`function_type`,`sort`,`title`,`status`,`exception_desc`,`create_time`,`create_by`,`update_time`,`update_by`
     </sql>
@@ -38,6 +42,77 @@
     <select id="getAll" resultMap="BaseMap">
         select <include refid="BaseFiled"/>
         from `p_menu` ORDER BY `menu_code` ASC
+    </select>
+
+    <select id="getMenuByVO" parameterType="com.pts.vo.MenuVO" resultMap="VOMap">
+        select p2.`menu_name` as `parent_name`,p1.*
+        from `p_menu` p1 left join `p_menu` p2 on p2.`menu_code` = p1.`parent_code`
+        <trim prefix="where" suffixOverrides="and|or">
+            <if test="menuName != null and menuName != ''">
+                p1.`menu_name` like concat(concat('%',#{menuName,jdbcType=VARCHAR}),'%') and
+            </if>
+            <if test="status != null">
+                p1.`status` = #{status,jdbcType=INTEGER} and
+            </if>
+            <if test="startTime != '' and startTime != null and endTime != null and endTime != ''">
+                p1.`create_time` between #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} and
+            </if>
+        </trim>
+        order by p1.`menu_code` asc
+        <if test="page != null and limit !=null">
+            limit ${(page-1)*limit},#{limit,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="getMenusCount" resultType="java.lang.Integer" parameterType="com.pts.vo.MenuVO">
+        select count(*) from(
+            select <include refid="BaseFiled"/>
+            from `p_menu`
+            <trim prefix="where" suffixOverrides="and|or">
+                <if test="menuName != null and menuName != ''">
+                    `menu_name` like concat(concat('%',#{menuName,jdbcType=VARCHAR}),'%') and
+                </if>
+                <if test="status != null">
+                    `status` = #{status,jdbcType=INTEGER} and
+                </if>
+                <if test="startTime != '' and startTime != null and endTime != null and endTime != ''">
+                    `create_time` between #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} and
+                </if>
+            </trim>
+        )t
+    </select>
+
+    <select id="getMaxSort" resultType="java.lang.Integer" parameterType="com.pts.model.Menu">
+        select max(`sort`) from `p_menu`
+        <trim prefix="where" suffixOverrides="and|or">
+            <if test="parentCode != null and parentCode != ''">
+                `parent_code` = #{parentCode,jdbcType=VARCHAR} and
+            </if>
+            <if test="level != null">
+                `level` = #{level,jdbcType=INTEGER} and
+            </if>
+        </trim>
+    </select>
+
+    <select id="select" resultMap="BaseMap" parameterType="com.pts.model.Menu">
+        select <include refid="BaseFiled" /> from `p_menu`
+        <trim prefix="where" suffixOverrides="and|or">
+            <if test="menuCode !=null and menuCode != ''">
+                `menu_code` = #{menuCode,jdbcType=VARCHAR} and
+            </if>
+            <if test="parentCode != null and parentCode != ''">
+                `parent_code` = #{parentCode,jdbcType=VARCHAR} and
+            </if>
+            <if test="menuName != null and menuName != ''">
+                `menu_name` = #{menuName,jdbcType=VARCHAR} and
+            </if>
+            <if test="level != null">
+                `level` = #{level,jdbcType=INTEGER} and
+            </if>
+            <if test="sort != null">
+                `sort` = #{sort,jdbcType=INTEGER} and
+            </if>
+        </trim>
     </select>
 
     <insert id="insert" parameterType="com.pts.model.Menu">

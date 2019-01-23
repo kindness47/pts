@@ -22,6 +22,23 @@ public class OrganizationController extends BaseController {
     @Autowired
     private OrganizationService organizationService;
 
+    //组织机构预览
+    @RequestMapping(value = "/organization-list")
+    public String organizationList(){
+        return "pts/organization-list";
+    }
+
+    //组织机构管理
+    @RequestMapping(value = "/organization-manage")
+    public String organizationManage(){
+        return "pts/organization-manage";
+    }
+
+    //项目信息
+    @RequestMapping(value = "/project-list")
+    public String projectList(){
+        return "pts/project-list";
+    }
 
     /**
      * Description： 获取组织机构列表

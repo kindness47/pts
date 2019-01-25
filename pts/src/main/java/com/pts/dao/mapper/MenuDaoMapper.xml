@@ -41,7 +41,8 @@
 
     <select id="getAll" resultMap="BaseMap">
         select <include refid="BaseFiled"/>
-        from `p_menu` ORDER BY `menu_code` ASC
+          from `p_menu` where `status` = 1
+          ORDER BY `menu_code` ASC
     </select>
 
     <select id="getMenuByVO" parameterType="com.pts.vo.MenuVO" resultMap="VOMap">

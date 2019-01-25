@@ -38,10 +38,21 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public int insert(Menu menu) {
-        //初始化系统排序
-        Menu resultMenu = menuDao.select(menu);
+        //检查菜单编码是否已存在
+        Menu m = new Menu();
+        m.setMenuCode(menu.getMenuCode());
+        Menu selectByMenuCode = menuDao.select(m);
+        if(selectByMenuCode != null)
+            throw new MenuException("050101");
+        //检查菜单sort
+
+        Menu m1 = new Menu();
+        m1.setParentCode(menu.getParentCode());
+        m1.setLevel(menu.getLevel());
+        m1.setSort(menu.getSort());
+        Menu resultMenu = menuDao.select(m1);
         if(resultMenu != null)
-            throw new MenuException("当前排序已被占用");
+            throw new MenuException("050102");
 
         menu.setId(UUIDUtil.getUUIDString());
         menu.setMenuClass(menu.getMenuClass().replace("-",""));

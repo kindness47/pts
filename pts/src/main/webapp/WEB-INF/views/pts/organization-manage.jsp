@@ -326,20 +326,6 @@
     }
     get_count_and_render_paged_data(null,null,"首页");
 
-    /*$.ajax({
-        type:"post",
-        url:"\${ptsStatic}/organizations-count",
-        dataType:"json",
-        success:function (data) {
-            if(data.success){
-                renderPageData("tbody-view","demo","table-page",null,data.result,"\${ptsStatic}/organizations");
-            }else
-                layer.msg("数量获取失败",{icon:2,time:1500});
-        },
-        error:function(data){
-            alert("数量获取失败");
-        }
-    });*/
 
     var organization_setStatus = function(id,status){
         var optitle = status == "1"?"启用":"停用";

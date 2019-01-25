@@ -23,7 +23,7 @@
 
 <article class="page-container">
 	<form class="form form-horizontal" id="form-user-add">
-		<input type="hidden" id="id" name="id">
+		<input type="hidden" id="id" name="id" value="${menu.id}">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3" style="text-align: right"><span class="c-red">*</span>菜单名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -53,7 +53,7 @@
 					<option value="0">--- 非一级目录必选 ---</option>
 					<c:forEach items="${menus}" var="menu1">
 						<c:if test="${menu1.level != '3'}">
-							<option value="${menu1.menuCode}" <c:if test="${menu.parentCode == menu1.menuCode}"> selected</c:if> >${menu1.menuName}</option>
+							<option value="${menu1.menuCode}" level="${menu1.level}" <c:if test="${menu.parentCode == menu1.menuCode}"> selected</c:if> >${menu1.menuName}</option>
 						</c:if>
 					</c:forEach>
 				</select>
@@ -70,7 +70,10 @@
 			<div class="formControls col-xs-8 col-sm-9">
 				<select id="menuClass" class="form-control select" name="menuClass">
 					<option value="">--- 一级目录选择(内置图标) ---</option>
-					<option value="&-#xe603;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe603;'}"> selected</c:if> >&#xe603;</option>
+					<option value="&-#xe62d;" ><i class="Hui-iconfont Hui-iconfont-root"></i></option>
+					<option value="&-#xe613;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe613;'}"> selected</c:if> >&#xe613;</option>
+					<option value="&-#xe61a;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe61a;'}"> selected</c:if> >&#xe61a;</option>
+					<option value="&-#xe62e;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe62e;'}"> selected</c:if> >&#xe62e;</option>
 					<option value="&-#xe617;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe617;'}"> selected</c:if> >&#xe617;</option>
 					<option value="&-#xe720;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe720;'}"> selected</c:if> >&#xe720;</option>
 					<option value="&-#xe6bd;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe6bd;'}"> selected</c:if> >&#xe6bd;</option>
@@ -156,9 +159,25 @@ $(function(){
                             parent.layer.close(index);
                         });
                     } else {
-                        if(data.errCode == "1234")
-                            alert("当前排序已被占用");
-                        parent.layer.msg(data.message, {icon: 5, time: 2000});
+                        switch (data.errCode) {
+							case "050101":
+							    layer.msg(data.message,{icon:5,time:1500});
+							    break;
+							case "050102":
+                                var index = layer.open({
+                                    title:"提示",
+                                    content:data.message+",是否设置为当前目录下的最大排序？",
+                                    yes:function () {
+                                        var params={"parentCode":$("#parentCode").val(),"level":$("#level").val()};
+                                        $.post("${ptsStatic}/get-max-sort",params,function (data) {
+                                            $("#sort").val(data.result+1);
+                                            layer.close(index);
+                                            layer.msg("已设置为当前层级的最大排序",{icon:1,time:1500});
+                                        })
+                                    }
+                                });
+                                break;
+                        }
                     }
                 },
 				error:function () {
@@ -182,13 +201,17 @@ function changeLevel(){
         $(".menu-class-icon").removeClass("hidden").addClass("block");
         $(".parent-code-select").removeClass("block").addClass("hidden");
     }
-    if(level == LEVEL2)
+    if(level == LEVEL2){
         $(".menu-url").removeClass("hidden").addClass("block");
-	else
+        $("option[level="+LEVEL1+"]").removeClass("hidden");
+        $("option[level="+LEVEL2+"]").addClass("hidden");
+    }else
         $(".menu-url").removeClass("block").addClass("hidden");
     if(level == LEVEL3){
         $(".menu-title-div").removeClass("block").addClass("hidden");
     	$(".function-type-select").removeClass("hidden").addClass("block");
+        $("option[level="+LEVEL1+"]").addClass("hidden");
+        $("option[level="+LEVEL2+"]").removeClass("hidden");
     }else {
         $(".menu-title-div").removeClass("hidden").addClass("block");
         $(".function-type-select").removeClass("block").addClass("hidden");

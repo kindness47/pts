@@ -45,7 +45,7 @@
             </a>
     </div>
 
-    <table class="table table-border table-bordered table-striped table-hover mt-20" style="width: 900px">
+        <table class="table table-border table-bordered table-striped table-hover table-bg mt-20" style="width: 900px">
 
         <thead>
             <tr class="text-c">
@@ -79,7 +79,7 @@
         <td><span class="w-100 long-text-hidden">{{ menu.url }}</span></td>
         <td><span class="w-40 long-text-hidden">{{ menu.level }}</span></td>
         <td><span class="w-50 long-text-hidden"><i class="Hui-iconfont">{{ menu.menuClass }}</i></span></td>
-        <td><span class="w-50 long-text-hidden">{{ menu.functionType }}</span></td>
+        <td><span class="w-60 long-text-hidden">{{ menu.functionType }}</span></td>
         <td><span class="w-40 long-text-hidden">{{ menu.sort }}</span></td>
         <td><span class="w-120 long-text-hidden">{{ timestampToTime(menu.createTime) }}</span></td>
         <td><span class="w-60 long-text-hidden">{{ menu.createBy == null ? "":menu.createBy }}</span></td>

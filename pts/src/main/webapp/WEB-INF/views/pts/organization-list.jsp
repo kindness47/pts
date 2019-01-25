@@ -11,6 +11,8 @@
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/h-ui.admin/css/H-ui.admin.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="${ptsStatic}/static/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-table-style.css">
+    <link rel="stylesheet" type="text/css" href="${ptsStatic}/mystatic/css/my-defined.css">
     <style type="text/css">
         body{overflow: auto;}
         .Hui-aside{position: absolute;top:0px;bottom:0;left:0;padding-top:30px;padding-left:15px;width:199px;z-index:99;overflow:auto; background-color:rgba(238,238,238,0.5);border-right: 1px solid #e5e5e5;border-radius: 1%;}
@@ -43,7 +45,7 @@
         </div>
 
             <!-- 表格 -->
-            <table class="table table-border table-bordered table-hover table-bg table-sort mt-20">
+            <table class="table table-border table-bordered table-hover table-bg table-sort mt-20" style="width: 900px;">
                 <thead>
                     <tr class="text-c">
                         <th>操作</th>
@@ -52,6 +54,7 @@
                         <th>父级组织机构名</th>
                         <th>创建时间</th>
                         <th>创建人</th>
+                        <th>最后操作人</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-view">
@@ -86,18 +89,21 @@
     <script id="demo" type="text/html">
         {{# layui.each(d,function(index,o){   }}
             <tr class="text-c">
-                <td>
+                <td><span class="long-text-hidden w-80">
                     <shiro:hasPermission name="0101-02">
                         <a title="修改" href="javascript:;" onclick="organization_add('{{ o.id }}')"><i class="Hui-iconfont">&#xe6df;</i></a>
                     </shiro:hasPermission>
+                    </span>
                 </td>
-                <td>{{ o.organizationName }}</td>
-                <td>{{ o.organizationShortName }}</td>
-                <td>{{ o.parentName == null?"":o.parentName }}</td>
-                <td>
+                <td><span class="long-text-hidden w-130">{{ o.organizationName }}</span></td>
+                <td><span class="long-text-hidden w-130">{{ o.organizationShortName }}</span></td>
+                <td><span class="long-text-hidden w-130">{{ o.parentName == null?"":o.parentName }}</span></td>
+                <td><span class="long-text-hidden w-130">
                     {{ timestampToTime(o.createTime) }}
+                    </span>
                 </td>
-                <td>{{o.createBy }}</td>
+                <td><span class="long-text-hidden w-80">{{o.createBy == null ? "" : o.createBy }}</span></td>
+                <td><span class="long-text-hidden w-80">{{o.updateBy == null ? "" : o.updateBy }}</span></td>
             </tr>
         {{# }); }}
     </script>

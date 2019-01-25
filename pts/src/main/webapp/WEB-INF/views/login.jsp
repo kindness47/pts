@@ -158,8 +158,8 @@
     //login_div宽高为400,250,左右居中,top:160px;
     var screenWidth = document.body.clientWidth,	//浏览器窗口宽度
 		screenHeight = document.body.clientHeight,	//浏览器窗口高度
-		INIT_MARGIN_LEFT = 0,		//div距离左边距离初始长度
-		INIT_MARGIN_TOP = 160,		//div距离顶部初始长度
+		INIT_MARGIN_LEFT = 0,							//div距离左边距离初始长度
+		INIT_MARGIN_TOP = 160,						//div距离顶部初始长度
 		CLICK_COUNT = 0,								//记录的x,y次数
 		FIRST_X = 0,									//第一次有记录的mous x
 		FIRST_Y = 0;									//第一次有记录的mous y
@@ -201,23 +201,35 @@
         CLICK_COUNT = 0;
     });
     $(".login-div").dblclick(function () {
+        INIT_MARGIN_LEFT = $(".login-div").offsetLeft;
+        INIT_MARGIN_TOP = $(".login-div").offsetTop;
+
+        alert(INIT_MARGIN_LEFT+","+INIT_MARGIN_TOP);
         $(".login-div").on("mousedown",function () {
+
             var e = event||window.event;
 
-			//获取鼠标新的x,y
-			var NEW_MOUSE_X = e.clientX,
-				NEW_MOUSE_Y = e.clientY;
-			console.log('('+NEW_MOUSE_X+','+NEW_MOUSE_Y+')');
-			//移动距离
-			var MOVE_X = NEW_MOUSE_X - FIRST_X,
-				MOVE_Y = NEW_MOUSE_Y - FIRST_Y;
-			console.log('move:'+MOVE_X+','+MOVE_Y+'-');
-			//设置新的left,top
-			var left = INIT_MARGIN_LEFT + MOVE_X*2,
-				top = INIT_MARGIN_TOP +MOVE_Y;
-			console.log('distace'+left+','+top+'----');
-			$(".login-div").attr("style","left:"+left+"px;top:"+top+"px");
-
+            CLICK_COUNT ++;
+            if(CLICK_COUNT == 1){
+                FIRST_X = e.clientX;
+                FIRST_Y = e.clientY;
+                //console.log("first:"+FIRST_X+","+FIRST_Y);
+                //console.log("first-left-top:"+INIT_MARGIN_LEFT+","+INIT_MARGIN_TOP);
+            }else {
+                //获取鼠标新的x,y
+                var NEW_MOUSE_X = e.clientX,
+                    NEW_MOUSE_Y = e.clientY;
+                console.log('('+NEW_MOUSE_X+','+NEW_MOUSE_Y+')');
+                //移动距离
+                var MOVE_X = NEW_MOUSE_X - FIRST_X,
+                    MOVE_Y = NEW_MOUSE_Y - FIRST_Y;
+                console.log('move:'+MOVE_X+','+MOVE_Y+'-');
+                //设置新的left,top
+                var left = INIT_MARGIN_LEFT + MOVE_X*2,
+                top = INIT_MARGIN_TOP +MOVE_Y;
+                console.log('distace'+left+','+top+'----');
+                $(".login-div").attr("style","left:"+left+"px;top:"+top+"px");
+            }
         });
     });
 </script>

@@ -75,7 +75,7 @@
             <c:if test="${menu.level =='1'}">
                 <dl>
                     <dt>
-                        <i class="Hui-iconfont">${menu.menuClass}</i>${menu.menuName}
+                        <i class="Hui-iconfont pr-5">${menu.menuClass}</i>${menu.menuName}
                         <i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i>
                         <c:set var="code" value="${menu.menuCode}"></c:set>
                         <dd>

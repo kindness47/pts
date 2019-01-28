@@ -70,7 +70,7 @@
 			<div class="formControls col-xs-8 col-sm-9">
 				<select id="menuClass" class="form-control select" name="menuClass">
 					<option value="">--- 一级目录选择(内置图标) ---</option>
-					<option value="&-#xe62d;" ><i class="Hui-iconfont Hui-iconfont-root"></i></option>
+					<option value="&-#xe62d;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe62d;'}"> selected</c:if> >&#xe62d;</option>
 					<option value="&-#xe613;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe613;'}"> selected</c:if> >&#xe613;</option>
 					<option value="&-#xe61a;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe61a;'}"> selected</c:if> >&#xe61a;</option>
 					<option value="&-#xe62e;" class="Hui-iconfont" <c:if test="${menu.menuClass == '&#xe62e;'}"> selected</c:if> >&#xe62e;</option>
@@ -148,7 +148,7 @@ $(function(){
 		success:"valid",
 		submitHandler:function(form){
             $(form).ajaxSubmit({
-                url: "menu-save",
+                url: "${ptsStatic}/menu-save",
                 type:"post",
                 async:false,
                 success: function (data) {
@@ -216,11 +216,10 @@ function changeLevel(){
         $(".menu-title-div").removeClass("hidden").addClass("block");
         $(".function-type-select").removeClass("block").addClass("hidden");
     }
-	/*if($("#level").prop("disabled")){
-
-	}*/
 }
-</script> 
+
+changeLevel();
+</script>
 <!--/请在上方写此页面业务相关的脚本-->
 </body>
 </html>

@@ -46,7 +46,7 @@
 				layer = layui.layer;
 				layer.open({
 					title:"这是标题"
-					,content:"这是内容"
+					,content:"请收好你的绿帽"
 				});
 			});
         }

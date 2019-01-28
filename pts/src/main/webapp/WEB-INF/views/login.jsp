@@ -36,7 +36,8 @@
 			margin-left: 90px;
 		}
 		.layui-input-block input{
-			background: rgba(255,255,255,0.6);
+			background: rgb(255,255,255);
+            opacity: 0.7 !important;
 		}
 		.layui-btn {
 			font-family: SF Pro Display,Roboto,Noto,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif;
@@ -54,33 +55,46 @@
 			color: #3d3d3d;
 			text-align: center;
 		}
-	</style>
+        /*设置文字不能被选中*/
+        .no-select{
+            -webkit-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
+        }
+        /*解决input自动选中背景变黄问题*/
+        input:-webkit-autofill {
+            box-shadow: 0 0 0 1000px rgb(254,254,254) inset !important;
+			opacity: 0.7 !important;
+            color: #3d3d3d !important;
+        }
+    </style>
 </head>
 <body style="height: 1000px;overflow-y: hidden">
 <div id="my-animal" class="my-animal"></div>
 
-<div class="login-div">
+<div class="login-div" id="login-div">
 	<div class="form-div">
 		<form class="layui-form" action="login" method="post">
 			<div class="layui-form-item">
 				<label class="layui-input-block">
-					<div class="login-title">用户登录</div>
+					<div class="login-title no-select">用户登录</div>
 				</label>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">用户名</label>
+				<label class="layui-form-label no-select" autocomplete="off">用户名</label>
 				<div class="layui-input-block">
 					<input type="text" name="account" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">密码</label>
+				<label class="layui-form-label no-select">密码</label>
 				<div class="layui-input-block">
 					<input type="password" name="passWord" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<div class="layui-input-block">
+				<div class="layui-input-block no-select">
 					<input type="submit" class="layui-btn" value="登录">
 				</div>
 			</div>
@@ -164,9 +178,9 @@
 		FIRST_X = 0,									//第一次有记录的mous x
 		FIRST_Y = 0;									//第一次有记录的mous y
 
-    $(".login-div").mousedown(function () {
+    $("#login-div").mousedown(function () {
 
-        $(".login-div").on("mousemove",function () {
+        $("#login-div").on("mousemove",function () {
             var e = event||window.event;
 
             CLICK_COUNT ++;
@@ -179,57 +193,65 @@
                 //获取鼠标新的x,y
                 var NEW_MOUSE_X = e.clientX,
                     NEW_MOUSE_Y = e.clientY;
-                console.log('('+NEW_MOUSE_X+','+NEW_MOUSE_Y+')');
+                //console.log('('+NEW_MOUSE_X+','+NEW_MOUSE_Y+')');
                 //移动距离
                 var MOVE_X = NEW_MOUSE_X - FIRST_X,
                     MOVE_Y = NEW_MOUSE_Y - FIRST_Y;
-                console.log('move:'+MOVE_X+','+MOVE_Y+'-');
+                //console.log('move:'+MOVE_X+','+MOVE_Y+'-');
                 //设置新的left,top
 				var left = INIT_MARGIN_LEFT + MOVE_X*2,
 					top = INIT_MARGIN_TOP +MOVE_Y;
-                console.log('distace'+left+','+top+'----');
-				$(".login-div").attr("style","left:"+left+"px;top:"+top+"px");
+                //console.log('distace'+left+','+top+'----');
+				//$("#login-div").attr("style","left:"+left+"px;top:"+top+"px");
+                $("#login-div").css("left",left+"px");
+                $("#login-div").css("top",top+"px");
             }
         });
     });
-    $(".login-div").on("mouseup",function () {
-        $(".login-div").off("mousemove");
+    $("#login-div").on("mouseup",function () {
+        $("#login-div").off("mousemove");
     });
     $("input").focus(function () {
-        $(".login-div").off("mousemove");
-        $(".login-div").off("mousedown");
+        $("#login-div").off("mousemove");
+        $("#login-div").off("mousedown");
         CLICK_COUNT = 0;
     });
-    $(".login-div").dblclick(function () {
-        INIT_MARGIN_LEFT = $(".login-div").offsetLeft;
-        INIT_MARGIN_TOP = $(".login-div").offsetTop;
+    $("#login-div").dblclick(function () {
+        var leftStr = $("#login-div").css("left"),
+            topStr = $("#login-div").css("top");
 
-        alert(INIT_MARGIN_LEFT+","+INIT_MARGIN_TOP);
-        $(".login-div").on("mousedown",function () {
+        INIT_MARGIN_LEFT = Number(leftStr.substr(0,leftStr.indexOf("p"))); // $("#login-div").css("left")获取后是  比如 111px 得字符串
+        INIT_MARGIN_TOP = Number(topStr.substr(0,topStr.indexOf("p")));
 
-            var e = event||window.event;
+        $("#login-div").on("mousedown",function () {
+            $("#login-div").on("mousemove",function () {
 
-            CLICK_COUNT ++;
-            if(CLICK_COUNT == 1){
-                FIRST_X = e.clientX;
-                FIRST_Y = e.clientY;
-                //console.log("first:"+FIRST_X+","+FIRST_Y);
-                //console.log("first-left-top:"+INIT_MARGIN_LEFT+","+INIT_MARGIN_TOP);
-            }else {
-                //获取鼠标新的x,y
-                var NEW_MOUSE_X = e.clientX,
-                    NEW_MOUSE_Y = e.clientY;
-                console.log('('+NEW_MOUSE_X+','+NEW_MOUSE_Y+')');
-                //移动距离
-                var MOVE_X = NEW_MOUSE_X - FIRST_X,
-                    MOVE_Y = NEW_MOUSE_Y - FIRST_Y;
-                console.log('move:'+MOVE_X+','+MOVE_Y+'-');
-                //设置新的left,top
-                var left = INIT_MARGIN_LEFT + MOVE_X*2,
-                top = INIT_MARGIN_TOP +MOVE_Y;
-                console.log('distace'+left+','+top+'----');
-                $(".login-div").attr("style","left:"+left+"px;top:"+top+"px");
-            }
+                var e = event || window.event;
+
+                CLICK_COUNT++;
+                if (CLICK_COUNT == 1) {
+                    FIRST_X = e.clientX;
+                    FIRST_Y = e.clientY;
+                    //console.log("first:" + FIRST_X + "," + FIRST_Y);
+                    //console.log("first-left-top:"+INIT_MARGIN_LEFT+","+INIT_MARGIN_TOP);
+                } else {
+                    //获取鼠标新的x,y
+                    var NEW_MOUSE_X = e.clientX,
+                        NEW_MOUSE_Y = e.clientY;
+                    //console.log('(' + NEW_MOUSE_X + ',' + NEW_MOUSE_Y + ')');
+                    //移动距离
+                    var MOVE_X = NEW_MOUSE_X - FIRST_X,
+                        MOVE_Y = NEW_MOUSE_Y - FIRST_Y;
+                    //console.log('move:' + MOVE_X + ',' + MOVE_Y + '-');
+                    //设置新的left,top
+                    var left = INIT_MARGIN_LEFT + MOVE_X * 2,
+                        top = INIT_MARGIN_TOP + MOVE_Y;
+                    //console.log('distace' + left + ',' + top + '----');
+                    //$("#login-div").attr("style","");
+                    $("#login-div").css("left", left + "px");
+                    $("#login-div").css("top", top + "px");
+                }
+            });
         });
     });
 </script>

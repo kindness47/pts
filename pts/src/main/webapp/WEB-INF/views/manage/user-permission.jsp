@@ -28,7 +28,7 @@
                             <span class="ml-20"><input type="checkbox" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" lay-filter="all" value="">全选</span>
                         </div>
                         <div class="panel-body">
-                            <input type="checkbox" name="${loginUserMenu.menuCode}" value="${loginUserMenu.menuCode}" title="${loginUserMenu.title}" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" identify-permission="permission"
+                            <input type="checkbox" name="${loginUserMenu.menuCode}" value="${loginUserMenu.menuCode}" title="${loginUserMenu.menuName}" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" identify-permission="permission"
                                 <c:forEach items="${opUserMenus}" var="opUserMenu">
                                     <c:if test="${opUserMenu.level == '1' && opUserMenu.menuCode == level1code}">
                                         checked = "true"
@@ -40,7 +40,7 @@
                                     <c:if test="${loginUserMenu1.parentCode == level1code}">
                                         <c:set var="level2code" value="${loginUserMenu1.menuCode}"></c:set>
                                         <div class="mt-3">
-                                            <input type="checkbox" name="${loginUserMenu1.menuCode}" value="${loginUserMenu1.menuCode}" title="${loginUserMenu1.title}" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" identify-permission="permission"
+                                            <input type="checkbox" name="${loginUserMenu1.menuCode}" value="${loginUserMenu1.menuCode}" title="${loginUserMenu1.menuName}" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" identify-permission="permission"
                                                 <c:forEach items="${opUserMenus}" var="opUserMenu">
                                                     <c:if test="${opUserMenu.level == '2' && opUserMenu.menuCode == level2code}">
                                                            checked = "true"
@@ -50,7 +50,7 @@
                                             <c:forEach items="${currentLoginUserMenus}" var="loginUserMenu2">
                                                 <c:if test="${loginUserMenu2.parentCode == level2code}">
                                                     <c:set var="level3code" value="${loginUserMenu2.menuCode}"></c:set>
-                                                    <input type="checkbox" name="${loginUserMenu2.menuCode}" value="${loginUserMenu2.menuCode}" title="${loginUserMenu2.title}" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" identify-permission="permission"
+                                                    <input type="checkbox" name="${loginUserMenu2.menuCode}" value="${loginUserMenu2.menuCode}" title="${loginUserMenu2.menuName}" permission-group="${loginUserMenu.menuCode}" lay-skin="primary" identify-permission="permission"
                                                     <c:forEach items="${opUserMenus}" var="opUserMenu">
                                                         <c:if test="${opUserMenu.level == '3' && opUserMenu.menuCode == level3code}">
                                                                checked = "true"
